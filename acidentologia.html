@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acidentologia - Instituto Português de Criminologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: hsl(0,0%,10%);
+      --hero-bg: hsl(0,0%,8%);
+      --fg: hsl(0,0%,96%);
+      --primary: hsl(119,99%,46%);
+      --primary-fg: hsl(0,0%,4%);
+      --secondary: hsl(0,0%,18%);
+      --muted: hsl(0,0%,16%);
+      --muted-fg: hsl(0,0%,60%);
+      --border: hsl(0,0%,20%);
+      --nav-btn: hsl(0,0%,18%);
+      --radius: 0.5rem;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+    body { font-family: "Sora", sans-serif; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    @keyframes fade-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-36px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(36px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .stagger > * { opacity: 0; transform: translateY(22px); transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1); }
+    .stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0.04s; }
+    .stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.10s; }
+    .stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.16s; }
+    .stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.22s; }
+    .stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.28s; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 4rem; transition: background 0.3s ease, border-color 0.3s ease; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: hsla(0,0%,8%,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom-color: var(--border); }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta { background: var(--nav-btn); color: var(--fg); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.6rem 1.5rem; border-radius: var(--radius); border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+    .nav-cta:hover { background: hsl(0,0%,24%); }
+    @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links, .nav-cta { display: none; } }
+
+    .btn-primary { background: var(--primary); color: var(--primary-fg); font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 2rem; border-radius: 2px; border: none; cursor: pointer; transition: filter 0.2s, transform 0.15s; display: inline-block; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-ghost { background: transparent; color: var(--fg); font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 2rem; border-radius: 2px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s; display: inline-block; }
+    .btn-ghost:hover { border-color: hsl(119,99%,46%,0.5); color: var(--primary); }
+
+    .section-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(2rem,4vw,3.2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; color: var(--fg); margin-bottom: 1.25rem; }
+    .section-title span { color: var(--primary); }
+    .section-body { font-size: clamp(0.875rem,1.4vw,1.05rem); font-weight: 300; color: var(--muted-fg); line-height: 1.75; }
+    .divider { width: 40px; height: 2px; background: var(--primary); margin: 1rem 0 1.5rem; }
+
+    .menu-btn { display: none; background: var(--nav-btn); border: none; cursor: pointer; padding: 0.5rem 0.6rem; border-radius: var(--radius); color: var(--fg); font-size: 1.1rem; line-height: 1; transition: background 0.2s; }
+    @media (max-width: 768px) { .menu-btn { display: block; } }
+    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; background: hsla(0,0%,7%,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .mobile-nav-links { list-style: none; }
+    .mobile-nav-links a { display: block; padding: 1rem 1.5rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); border-bottom: 1px solid var(--border); transition: color 0.2s, background 0.2s; }
+    .mobile-nav-links a:hover { color: var(--fg); background: hsl(0,0%,12%); }
+    .mobile-cta-wrap { padding: 1.25rem 1.5rem; }
+    .mobile-cta-btn { display: block; width: 100%; background: var(--primary); color: var(--primary-fg); font-family: "Sora",sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.85rem; border-radius: 2px; border: none; cursor: pointer; text-decoration: none; text-align: center; }
+    @media (min-width: 769px) { .mobile-menu { display: none !important; } }
+
+    .scroll-progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; background: var(--primary); width: 0%; pointer-events: none; }
+
+    footer { background: var(--hero-bg); border-top: 1px solid var(--border); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    @media (max-width: 768px) { footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.25rem; } }
+    .footer-logo { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+    .footer-logo span { color: var(--primary); }
+    .footer-copy { font-size: 0.7rem; font-weight: 300; color: var(--muted-fg); }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.7rem; font-weight: 400; color: var(--muted-fg); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* PAGE HERO */
+    .page-hero { position: relative; min-height: 65vh; display: flex; align-items: center; background: var(--hero-bg); overflow: hidden; padding-top: 80px; border-bottom: 1px solid var(--border); }
+    .page-hero-bg { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(ellipse 60% 60% at 78% 50%, hsl(119,99%,46%,0.08) 0%, transparent 70%), linear-gradient(hsl(0,0%,22%,0.10) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.10) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 4rem; display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
+    @media (max-width: 900px) { .page-hero-inner { grid-template-columns: 1fr; padding: 2rem 1.5rem 3.5rem; gap: 2.5rem; } }
+    .breadcrumb { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-fg); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.75rem; flex-wrap: wrap; opacity: 0; animation: fade-in 0.5s ease 0.05s forwards; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb-sep { color: hsl(0,0%,35%); }
+    .breadcrumb-current { color: var(--fg); }
+    .service-num { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
+    .page-h1 { font-size: clamp(2.8rem,6vw,5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.04em; color: var(--fg); margin-bottom: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
+    .page-h1 span { color: var(--primary); }
+    .page-desc { font-size: clamp(0.95rem,1.8vw,1.15rem); font-weight: 300; color: var(--muted-fg); line-height: 1.7; max-width: 50ch; margin-bottom: 2rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s forwards; }
+    .page-hero-btns { display: flex; flex-wrap: wrap; gap: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; }
+    .service-img-wrap { width: 260px; height: 260px; border-radius: 50%; overflow: hidden; border: 2px solid hsl(119,99%,46%,0.35); box-shadow: 0 0 0 8px hsl(119,99%,46%,0.07), 0 0 60px hsl(119,99%,46%,0.12), 0 32px 64px rgba(0,0,0,0.5); background: var(--muted); opacity: 0; animation: fade-in 0.8s ease 0.5s forwards; flex-shrink: 0; }
+    .service-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) contrast(1.1); }
+    @media (max-width: 900px) { .service-img-wrap { width: 200px; height: 200px; margin: 0 auto; } }
+
+    /* CONTENT SECTIONS */
+    .content-section { padding: 5rem 4rem; border-top: 1px solid var(--border); position: relative; isolation: isolate; }
+    .content-section.alt { background: var(--hero-bg); }
+    @media (max-width: 768px) { .content-section { padding: 4rem 1.5rem; } }
+    .content-section::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(ellipse 60% 50% at 80% 20%, hsl(119,99%,46%,0.04) 0%, transparent 70%), linear-gradient(hsl(0,0%,22%,0.12) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.12) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); pointer-events: none; z-index: -1; }
+    .content-inner { max-width: 1200px; margin: 0 auto; }
+
+    .fazemos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+    @media (max-width: 900px) { .fazemos-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+    .fazemos-bullets { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.75rem; }
+    .fazemos-bullet { display: flex; gap: 0.75rem; align-items: flex-start; padding: 1rem 1.25rem; background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 0.25s; }
+    .fazemos-bullet:hover { border-color: hsl(119,99%,46%,0.35); }
+    .fazemos-bullet-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); flex-shrink: 0; margin-top: 0.45rem; }
+    .fazemos-bullet-text { font-size: 0.85rem; font-weight: 300; color: var(--fg); line-height: 1.65; }
+    .fazemos-box { background: var(--secondary); border: 1px solid var(--border); border-radius: calc(var(--radius)*2); padding: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .fazemos-highlight { background: linear-gradient(135deg, hsl(119,99%,46%,0.08) 0%, transparent 60%); border: 1px solid hsl(119,99%,46%,0.2); border-radius: var(--radius); padding: 1.75rem; }
+    .fazemos-highlight h4 { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.6rem; }
+    .fazemos-highlight p { font-size: 0.88rem; font-weight: 300; color: var(--muted-fg); line-height: 1.7; }
+
+    .vantagens-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    @media (max-width: 900px) { .vantagens-grid { grid-template-columns: 1fr; } }
+    @media (min-width: 600px) and (max-width: 900px) { .vantagens-grid { grid-template-columns: repeat(2,1fr); } }
+    .vantagem-card { background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; transition: border-color 0.25s, transform 0.25s; position: relative; overflow: hidden; }
+    .vantagem-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); transform: scaleX(0); transform-origin: left; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+    .vantagem-card:hover { border-color: hsl(119,99%,46%,0.4); transform: translateY(-4px); }
+    .vantagem-card:hover::before { transform: scaleX(1); }
+    .vantagem-icon { font-size: 1.8rem; margin-bottom: 1.25rem; display: block; }
+    .vantagem-title { font-size: 1rem; font-weight: 600; color: var(--fg); letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .vantagem-desc { font-size: 0.8rem; font-weight: 300; color: var(--muted-fg); line-height: 1.65; }
+
+    .situacoes-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-top: 3rem; }
+    @media (max-width: 700px) { .situacoes-grid { grid-template-columns: 1fr; } }
+    .situacao-item { padding: 1.25rem 1.5rem; border-left: 3px solid var(--primary); background: var(--muted); border-radius: 0 var(--radius) var(--radius) 0; transition: background 0.25s; }
+    .situacao-item:hover { background: var(--secondary); }
+    .situacao-title { font-size: 0.88rem; font-weight: 600; color: var(--fg); margin-bottom: 0.3rem; }
+    .situacao-desc { font-size: 0.75rem; font-weight: 300; color: var(--muted-fg); line-height: 1.6; }
+
+    .processo-wrap { position: relative; }
+    .processo-steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-top: 3rem; }
+    @media (max-width: 768px) { .processo-steps { grid-template-columns: 1fr; } }
+    .processo-line { position: absolute; top: calc(3rem + 24px); left: calc(100%/6); right: calc(100%/6); height: 1px; background: var(--border); z-index: 0; }
+    @media (max-width: 768px) { .processo-line { display: none; } }
+    .processo-step { background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; position: relative; z-index: 1; }
+    .processo-num { width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: var(--primary-fg); font-size: 1rem; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+    .processo-title { font-size: 0.95rem; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; margin-bottom: 0.6rem; }
+    .processo-desc { font-size: 0.78rem; font-weight: 300; color: var(--muted-fg); line-height: 1.65; }
+
+    .cta-section { background: var(--hero-bg); border-top: 1px solid var(--border); padding: 6rem 4rem; position: relative; overflow: hidden; isolation: isolate; }
+    @media (max-width: 768px) { .cta-section { padding: 4rem 1.5rem; } }
+    .cta-section::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, hsl(119,99%,46%,0.09) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+    .cta-section::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(hsl(0,0%,22%,0.10) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.10) 1px, transparent 1px); background-size: 48px 48px, 48px 48px; pointer-events: none; z-index: -1; }
+    .cta-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .cta-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 1.25rem; }
+    .cta-title { font-size: clamp(2rem,4vw,3.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; color: var(--fg); margin-bottom: 1.25rem; }
+    .cta-title span { color: var(--primary); }
+    .cta-body { font-size: clamp(0.875rem,1.4vw,1rem); font-weight: 300; color: var(--muted-fg); line-height: 1.75; margin-bottom: 2.5rem; max-width: 52ch; margin-left: auto; margin-right: auto; }
+    .cta-actions { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .cta-contacts { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
+    .cta-contact-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 300; color: var(--muted-fg); }
+    .cta-contact-item strong { color: var(--fg); font-weight: 500; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-fg); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: var(--radius); transition: color 0.2s, border-color 0.2s; margin-top: 2.5rem; }
+    .back-link:hover { color: var(--primary); border-color: hsl(119,99%,46%,0.4); }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">IPC <span>·</span> Instituto Português de Criminologia</a>
+  <ul class="nav-links">
+    <li><a href="index.html#formacoes">Formações</a></li>
+    <li><a href="index.html#gabinete">Gabinete</a></li>
+    <li><a href="index.html#equipa">Equipa</a></li>
+    <li><a href="index.html#parcerias">Parcerias</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+  <a href="index.html#contacto" class="nav-cta">Contactar</a>
+  <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html#formacoes">Formações</a></li>
+      <li><a href="index.html#gabinete">Gabinete</a></li>
+      <li><a href="index.html#equipa">Equipa</a></li>
+      <li><a href="index.html#parcerias">Parcerias</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+    <div class="mobile-cta-wrap">
+      <a class="mobile-cta-btn" href="index.html#contacto">Contactar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-inner">
+    <div>
+      <div class="breadcrumb">
+        <a href="index.html">Início</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="index.html#gabinete">Gabinete</a>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">Acidentologia</span>
+      </div>
+      <p class="service-num">Gabinete de Criminologia · 02</p>
+      <h1 class="page-h1">Acidentologia</h1>
+      <p class="page-desc">Investigação técnico-científica de acidentes de viação e análise forense das dinâmicas rodoviárias com rigor e fundamentação científica.</p>
+      <div class="page-hero-btns">
+        <a href="index.html#contacto" class="btn-primary">Submeter Caso</a>
+        <a href="index.html#gabinete" class="btn-ghost">Ver Serviços</a>
+      </div>
+    </div>
+    <div class="service-img-wrap">
+      <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/acidentologia-1x1-400p-300x300.jpg" alt="Acidentologia" loading="eager" />
+    </div>
+  </div>
+</section>
+
+<!-- O QUE FAZEMOS -->
+<section class="content-section alt">
+  <div class="content-inner">
+    <p class="section-label reveal">O que fazemos?</p>
+    <h2 class="section-title reveal">Reconstituição de acidentes<br><span>com precisão científica.</span></h2>
+    <div class="divider reveal"></div>
+    <div class="fazemos-grid">
+      <div class="reveal-left">
+        <p class="section-body">Através de uma investigação rigorosa e da reconstituição do acidente, determinamos como ocorreu o impacto, a causalidade e a compatibilidade material com a colisão. Esta atividade técnica multidisciplinar é uma das nossas valências mais solicitadas por quem necessita de apoio especializado na resolução de processos de sinistros mais complexos.</p>
+        <div class="fazemos-bullets stagger" style="margin-top:1.75rem;">
+          <div class="fazemos-bullet"><div class="fazemos-bullet-dot"></div><div class="fazemos-bullet-text"><strong>Nexo de causalidade</strong> — determinação das relações causa-efeito entre os elementos do acidente</div></div>
+          <div class="fazemos-bullet"><div class="fazemos-bullet-dot"></div><div class="fazemos-bullet-text"><strong>Análise de testemunhos</strong> — avaliação técnica e científica dos depoimentos de testemunhas</div></div>
+          <div class="fazemos-bullet"><div class="fazemos-bullet-dot"></div><div class="fazemos-bullet-text"><strong>Análise de veículos</strong> — inspeção forense dos veículos envolvidos e dos danos produzidos</div></div>
+          <div class="fazemos-bullet"><div class="fazemos-bullet-dot"></div><div class="fazemos-bullet-text"><strong>Análise da cena</strong> — reconstituição técnica do cenário e da dinâmica do acidente</div></div>
+        </div>
+      </div>
+      <div class="reveal-right">
+        <div class="fazemos-box">
+          <div class="fazemos-highlight">
+            <h4>Abordagem Multidisciplinar</h4>
+            <p>A nossa equipa combina conhecimentos de criminologia, biomecânica, engenharia e ciências forenses para produzir relatórios de elevada credibilidade científica, aceites em processos judiciais e de seguro.</p>
+          </div>
+          <div class="fazemos-highlight">
+            <h4>Lei 70/2019</h4>
+            <p>Todos os nossos peritos forenses actuam ao abrigo da legislação portuguesa em vigor, garantindo que os relatórios produzidos têm validade jurídica plena perante os tribunais portugueses.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VANTAGENS -->
+<section class="content-section">
+  <div class="content-inner">
+    <p class="section-label reveal">Quais as vantagens?</p>
+    <h2 class="section-title reveal">Rigor científico<br><span>em cada detalhe.</span></h2>
+    <div class="vantagens-grid stagger">
+      <div class="vantagem-card">
+        <span class="vantagem-icon">🔬</span>
+        <div class="vantagem-title">Fórmula Criminológica Exclusiva</div>
+        <div class="vantagem-desc">A nossa abordagem criminológica exclusiva garante relatórios de elevada credibilidade, elaborados por criminologistas especializados em acidentologia e dinâmicas rodoviárias.</div>
+      </div>
+      <div class="vantagem-card">
+        <span class="vantagem-icon">⚖️</span>
+        <div class="vantagem-title">Metodologia Multidisciplinar</div>
+        <div class="vantagem-desc">Relatórios baseados em ciência e assentes em metodologias internacionalmente reconhecidas, garantindo rigor, imparcialidade e credibilidade técnico-científica.</div>
+      </div>
+      <div class="vantagem-card">
+        <span class="vantagem-icon">🛡️</span>
+        <div class="vantagem-title">Transparência e Verdade Material</div>
+        <div class="vantagem-desc">O escrutínio rigoroso de todas as evidências garante transparência processual e que a verdade material seja o mais próximo possível da verdade absoluta.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SITUAÇÕES -->
+<section class="content-section alt">
+  <div class="content-inner">
+    <p class="section-label reveal">Em que situações é útil?</p>
+    <h2 class="section-title reveal">Quando necessita<br><span>de acidentologia?</span></h2>
+    <div class="divider reveal"></div>
+    <p class="section-body reveal" style="max-width:60ch;margin-bottom:0;">Qualquer situação em que ocorra um incidente com veículo motorizado e se pretenda esclarecer a responsabilidade, consequências, causas e motivos por meios credíveis e científicos.</p>
+    <div class="situacoes-grid stagger">
+      <div class="situacao-item">
+        <div class="situacao-title">Acidentes com danos materiais</div>
+        <div class="situacao-desc">Reconstituição técnica para determinar responsabilidades e compatibilidade dos danos com o acidente.</div>
+      </div>
+      <div class="situacao-item">
+        <div class="situacao-title">Acidentes com vítimas corporais</div>
+        <div class="situacao-desc">Análise forense das causas e da biomecânica do impacto para determinação de responsabilidades em lesões.</div>
+      </div>
+      <div class="situacao-item">
+        <div class="situacao-title">Processos de seguro contestados</div>
+        <div class="situacao-desc">Parecer técnico-científico para contestação ou validação de responsabilidades em processos de sinistros complexos.</div>
+      </div>
+      <div class="situacao-item">
+        <div class="situacao-title">Apoio a processos judiciais</div>
+        <div class="situacao-desc">Relatórios periciais para uso em tribunal, com fundamentação técnica aceite por magistrados e advogados.</div>
+      </div>
+      <div class="situacao-item">
+        <div class="situacao-title">Investigação de causas para prevenção</div>
+        <div class="situacao-desc">Análise das causas estruturais de acidentes para implementação de medidas de prevenção rodoviária.</div>
+      </div>
+      <div class="situacao-item">
+        <div class="situacao-title">Arbitragem e mediação</div>
+        <div class="situacao-desc">Suporte técnico imparcial em processos de arbitragem entre as partes envolvidas num acidente.</div>
+      </div>
+    </div>
+    <a href="index.html#gabinete" class="back-link reveal">← Ver todos os serviços</a>
+  </div>
+</section>
+
+<!-- PROCESSO -->
+<section class="content-section">
+  <div class="content-inner">
+    <p class="section-label reveal">Como funciona?</p>
+    <h2 class="section-title reveal">O nosso<br><span>processo.</span></h2>
+    <div class="processo-wrap">
+      <div class="processo-line"></div>
+      <div class="processo-steps stagger">
+        <div class="processo-step">
+          <div class="processo-num">01</div>
+          <div class="processo-title">Contacto Inicial</div>
+          <div class="processo-desc">Submeta o seu caso através do formulário de contacto ou via telefone. A nossa equipa responde em 48 horas úteis com uma avaliação preliminar.</div>
+        </div>
+        <div class="processo-step">
+          <div class="processo-num">02</div>
+          <div class="processo-title">Avaliação Pericial</div>
+          <div class="processo-desc">Os nossos peritos analisam os elementos do caso, inspeccionam a cena do acidente e os veículos envolvidos, e definem a metodologia de reconstituição.</div>
+        </div>
+        <div class="processo-step">
+          <div class="processo-num">03</div>
+          <div class="processo-title">Relatório Final</div>
+          <div class="processo-desc">Entregamos um relatório técnico-científico detalhado, estruturado para uso judicial, de seguro ou institucional, com conclusões fundamentadas.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <p class="cta-label reveal">Precisa de apoio técnico?</p>
+    <h2 class="cta-title reveal">Submeta o seu caso.<br><span>Respondemos em 48h.</span></h2>
+    <p class="cta-body reveal">Os nossos peritos avaliarão o seu processo e fornecerão o apoio técnico necessário com base em critérios científicos rigorosos. Respondemos a todos os contactos em 48 horas úteis.</p>
+    <div class="cta-actions reveal">
+      <a href="index.html#contacto" class="btn-primary">Submeter Caso →</a>
+      <div class="cta-contacts">
+        <div class="cta-contact-item">📞 <strong>(+351) 928 355 468</strong></div>
+        <div class="cta-contact-item">✉ <strong>geral@ipcriminologia.pt</strong></div>
+        <div class="cta-contact-item">🕐 <strong>Seg–Sex, 9h00–15h30</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">IPC <span>·</span> Instituto Português de Criminologia</div>
+  <p class="footer-copy">© 2026 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="index.html#gabinete">Gabinete</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+    <li><a href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Facebook</a></li>
+    <li><a href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
+</footer>
+
+<script>
+  const prog = document.getElementById('scrollProgress');
+  const navbar = document.getElementById('navbar');
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const sy = window.scrollY;
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (sy / max * 100) + '%';
+        navbar.classList.toggle('scrolled', sy > 60);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger').forEach(el => observer.observe(el));
+
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  function closeMobileMenu() { mobileMenu.classList.remove('open'); menuBtn.textContent = '☰'; menuBtn.setAttribute('aria-expanded', 'false'); mobileMenu.setAttribute('aria-hidden', 'true'); }
+  menuBtn.addEventListener('click', () => { const isOpen = mobileMenu.classList.toggle('open'); menuBtn.textContent = isOpen ? '✕' : '☰'; menuBtn.setAttribute('aria-expanded', String(isOpen)); mobileMenu.setAttribute('aria-hidden', String(!isOpen)); });
+  mobileMenu.querySelectorAll('a').forEach(el => el.addEventListener('click', closeMobileMenu));
+  document.addEventListener('click', e => { if (!e.target.closest('nav')) closeMobileMenu(); });
+</script>
+</body>
+</html>

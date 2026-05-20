@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instituto Português de Criminologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:           hsl(0,0%,10%);
+      --hero-bg:      hsl(0,0%,8%);
+      --fg:           hsl(0,0%,96%);
+      --primary:      hsl(119,99%,46%);
+      --primary-dim:  hsl(119,99%,38%);
+      --primary-fg:   hsl(0,0%,4%);
+      --secondary:    hsl(0,0%,18%);
+      --muted:        hsl(0,0%,16%);
+      --muted-fg:     hsl(0,0%,60%);
+      --border:       hsl(0,0%,20%);
+      --nav-btn:      hsl(0,0%,18%);
+      --radius:       0.5rem;
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      font-family: "Sora", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ─── SCROLL ANIMATIONS ──────────────────────────────────── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .animate-fade-up  { animation: fade-up  0.7s cubic-bezier(0.16,1,0.3,1) forwards; }
+    .animate-fade-in  { animation: fade-in  0.5s ease-out forwards; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      will-change: opacity, transform;
+      transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.65s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      will-change: auto;
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-36px);
+      will-change: opacity, transform;
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal-left.visible  { opacity: 1; transform: translateX(0); will-change: auto; }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(36px);
+      will-change: opacity, transform;
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); will-change: auto; }
+
+    /* stagger children — compositor-only (opacity + transform only) */
+    .stagger > * {
+      opacity: 0;
+      transform: translateY(22px);
+      will-change: opacity, transform;
+      transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.55s cubic-bezier(0.16,1,0.3,1);
+    }
+    .stagger.visible > *:nth-child(1)  { opacity:1; transform:none; transition-delay:0.04s; will-change:auto; }
+    .stagger.visible > *:nth-child(2)  { opacity:1; transform:none; transition-delay:0.10s; will-change:auto; }
+    .stagger.visible > *:nth-child(3)  { opacity:1; transform:none; transition-delay:0.16s; will-change:auto; }
+    .stagger.visible > *:nth-child(4)  { opacity:1; transform:none; transition-delay:0.22s; will-change:auto; }
+    .stagger.visible > *:nth-child(5)  { opacity:1; transform:none; transition-delay:0.28s; will-change:auto; }
+    .stagger.visible > *:nth-child(6)  { opacity:1; transform:none; transition-delay:0.34s; will-change:auto; }
+    .stagger.visible > *:nth-child(7)  { opacity:1; transform:none; transition-delay:0.40s; will-change:auto; }
+    .stagger.visible > *:nth-child(8)  { opacity:1; transform:none; transition-delay:0.46s; will-change:auto; }
+    .stagger.visible > *:nth-child(9)  { opacity:1; transform:none; transition-delay:0.52s; will-change:auto; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 4rem;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      border-bottom: 1px solid transparent;
+      will-change: background;
+    }
+    nav.scrolled {
+      background: hsla(0,0%,8%,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--fg);
+    }
+    .nav-logo span { color: var(--primary); }
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted-fg);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta {
+      background: var(--nav-btn); color: var(--fg);
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.6rem 1.5rem;
+      border-radius: var(--radius); border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover  { background: hsl(0,0%,24%); }
+    .nav-cta:active { transform: scale(0.97); }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links, .nav-cta { display: none; }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: flex-end;
+      background: var(--hero-bg); overflow: hidden;
+    }
+    .hero-canvas-wrap {
+      position: absolute; inset: 0;
+      contain: strict;
+    }
+    #heroCanvas {
+      width: 100%; height: 100%;
+      display: block;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.30);
+      z-index: 1; pointer-events: none;
+    }
+    .hero-logo {
+      position: absolute;
+      right: 22%;
+      top: 50%;
+      transform: translateY(-52%);
+      z-index: 5;
+      pointer-events: none;
+      width: clamp(180px, 26vw, 360px);
+      opacity: 0;
+      mix-blend-mode: screen;
+      /* radial mask: visible centre, fades to nothing at edges */
+      -webkit-mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, black 30%, transparent 100%);
+      mask-image:         radial-gradient(ellipse 72% 72% at 50% 50%, black 30%, transparent 100%);
+      animation: hero-logo-in 1.4s cubic-bezier(0.16,1,0.3,1) 1.0s forwards;
+      will-change: opacity, transform;
+    }
+    @keyframes hero-logo-in {
+      from { opacity: 0; transform: translateY(-48%) scale(0.94); }
+      to   { opacity: 0.72; transform: translateY(-52%) scale(1); }
+    }
+    @keyframes hero-logo-in-mobile {
+      from { opacity: 0; transform: translateY(-55%) scale(0.92); }
+      to   { opacity: 0.42; transform: translateY(-50%) scale(1); }
+    }
+    @media (max-width: 768px) {
+      .hero-logo {
+        display: block;
+        width: 72px;
+        right: 1.25rem;
+        top: 5.5rem;
+        transform: none;
+        animation: hero-logo-in-mobile 1.6s cubic-bezier(0.16,1,0.3,1) 1.0s forwards;
+        -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+        mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+      }
+    }
+    .hero-content {
+      position: relative; z-index: 10;
+      pointer-events: none;
+      width: 100%; max-width: min(90%, 42rem);
+      padding: 1.5rem 2.5rem 3rem;
+    }
+    @media (min-width: 768px) { .hero-content { padding: 2rem 4rem 4rem; } }
+
+    .hero-h1 {
+      font-size: clamp(2.8rem,8vw,5.5rem);
+      font-weight: 700; line-height: 1.05;
+      letter-spacing: -0.05em; text-transform: uppercase;
+      color: var(--fg); margin-bottom: 0.5rem;
+      opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+      will-change: opacity, transform;
+    }
+    .hero-h1 span { color: var(--primary); }
+    .hero-sub {
+      font-size: clamp(1.05rem,2.5vw,1.6rem); font-weight: 300;
+      color: rgba(245,245,245,0.80); margin-bottom: 1rem;
+      opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.4s forwards;
+    }
+    .hero-desc {
+      font-size: clamp(0.8rem,1.5vw,1.05rem); font-weight: 300;
+      color: var(--muted-fg); line-height: 1.7; margin-bottom: 1.75rem;
+      opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.55s forwards;
+    }
+    .hero-btns {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      pointer-events: auto;
+      opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.70s forwards;
+    }
+    .btn-primary {
+      background: var(--primary); color: var(--primary-fg);
+      font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.85rem 2rem; border-radius: 2px; border: none; cursor: pointer;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover  { filter: brightness(1.1); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      background: #fff; color: var(--hero-bg);
+      font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.85rem 2rem; border-radius: 2px; border: none; cursor: pointer;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .btn-secondary:hover  { filter: brightness(0.9); }
+    .btn-secondary:active { transform: scale(0.97); }
+    .hero-trust {
+      margin-top: 1.25rem; font-size: 0.72rem; font-weight: 300;
+      color: rgba(153,153,153,0.6); pointer-events: auto;
+      opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.85s forwards;
+    }
+
+    /* ─── SECTION COMMON ─────────────────────────────────────── */
+    section { padding: 6rem 4rem; }
+    @media (max-width: 768px) { section { padding: 4rem 1.5rem; } }
+
+    .section-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(2rem,4vw,3.2rem); font-weight: 700;
+      letter-spacing: -0.04em; line-height: 1.1; color: var(--fg);
+      margin-bottom: 1.25rem;
+    }
+    .section-title span { color: var(--primary); }
+    .section-body {
+      font-size: clamp(0.875rem,1.4vw,1.05rem); font-weight: 300;
+      color: var(--muted-fg); line-height: 1.75; max-width: 52ch;
+    }
+
+    /* ─── SOBRE ──────────────────────────────────────────────── */
+    #sobre {
+      background: var(--hero-bg);
+      border-top: 1px solid var(--border);
+    }
+    .sobre-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start; max-width: 1200px; margin: 0 auto;
+    }
+    @media (max-width: 900px) { .sobre-grid { grid-template-columns: 1fr; gap: 3rem; } }
+
+    .sobre-values {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2.5rem;
+    }
+    .value-chip {
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--fg);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .value-chip svg { flex-shrink: 0; color: var(--primary); }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(2,1fr); gap: 1.5rem;
+    }
+    .stat-card {
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem;
+    }
+    .stat-number {
+      font-size: 2.8rem; font-weight: 700; letter-spacing: -0.04em;
+      color: var(--primary); line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.75rem; font-weight: 400; color: var(--muted-fg); margin-top: 0.4rem;
+    }
+    .sobre-mission {
+      background: linear-gradient(135deg, hsl(119,99%,46%,0.08) 0%, transparent 60%);
+      border: 1px solid hsl(119,99%,46%,0.2);
+      border-radius: var(--radius); padding: 1.75rem; margin-top: 2rem;
+    }
+    .sobre-mission h4 {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 0.6rem;
+    }
+    .sobre-mission p {
+      font-size: 0.9rem; font-weight: 300; color: var(--muted-fg); line-height: 1.7;
+    }
+
+    /* ─── FORMAÇÕES ──────────────────────────────────────────── */
+    #formacoes { background: var(--hero-bg); border-top: 1px solid var(--border); }
+    .formacoes-inner { max-width: 1200px; margin: 0 auto; }
+    .formacoes-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;
+    }
+
+    .areas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .area-card {
+      background: var(--bg);
+      padding: 2rem 1.75rem;
+      transition: background 0.25s;
+      cursor: default;
+      position: relative; overflow: hidden;
+    }
+    .area-card::before {
+      content: ""; position: absolute; top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--primary);
+      transition: height 0.35s cubic-bezier(0.16,1,0.3,1);
+    }
+    .area-card:hover { background: var(--muted); }
+    .area-card:hover::before { height: 100%; }
+    .area-icon {
+      font-size: 1.5rem; margin-bottom: 1rem;
+      display: block;
+    }
+    .area-name {
+      font-size: 0.95rem; font-weight: 600; color: var(--fg);
+      letter-spacing: -0.01em; margin-bottom: 0.5rem;
+    }
+    .area-desc {
+      font-size: 0.78rem; font-weight: 300; color: var(--muted-fg);
+      line-height: 1.6;
+    }
+
+    /* ─── GABINETE ───────────────────────────────────────────── */
+    #gabinete {
+      background: var(--hero-bg);
+      border-top: 1px solid var(--border);
+    }
+    .gabinete-inner { max-width: 1200px; margin: 0 auto; }
+    .gabinete-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: stretch; margin-top: 3.5rem;
+    }
+    @media (max-width: 900px) { .gabinete-grid { grid-template-columns: 1fr; gap: 2.5rem; } }
+
+    .services-list { display: flex; flex-direction: column; gap: 1rem; }
+    .service-item {
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem 1.75rem;
+      display: grid; grid-template-columns: 2.5rem 1fr auto;
+      gap: 1rem; align-items: center;
+      transition: border-color 0.25s, background 0.25s;
+      text-decoration: none; color: inherit; cursor: pointer;
+    }
+    .service-item:hover {
+      border-color: hsl(119,99%,46%,0.4);
+      background: hsl(119,99%,46%,0.05);
+    }
+    .service-item-arrow {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--primary);
+      transition: color 0.2s, transform 0.2s;
+      margin-top: 0.5rem; display: inline-block;
+    }
+    .service-item:hover .service-item-arrow { filter: brightness(1.15); transform: translateX(4px); }
+    .service-photo {
+      width: 80px; height: 80px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0;
+      border: 2px solid hsl(119,99%,46%,0.35);
+      box-shadow: 0 0 0 4px hsl(119,99%,46%,0.07);
+      background: var(--muted);
+    }
+    .service-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    @media (max-width: 600px) {
+      .service-item { grid-template-columns: 2.5rem 1fr auto; }
+      .service-photo { width: 60px; height: 60px; }
+    }
+    .service-num {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--primary); padding-top: 0.1rem;
+    }
+    .service-name {
+      font-size: 0.95rem; font-weight: 600; color: var(--fg); margin-bottom: 0.35rem;
+    }
+    .service-desc {
+      font-size: 0.78rem; font-weight: 300; color: var(--muted-fg); line-height: 1.6;
+    }
+
+    .gabinete-visual {
+      position: relative; border-radius: calc(var(--radius) * 2);
+      overflow: hidden; flex: 1; min-height: 0;
+    }
+    .gabinete-visual img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(30%) contrast(1.1);
+    }
+    .gabinete-visual-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        hsl(119,99%,46%,0.15) 0%,
+        transparent 50%,
+        rgba(0,0,0,0.5) 100%);
+    }
+    .gabinete-cta {
+      margin-top: 2rem;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--primary);
+      transition: gap 0.2s;
+    }
+    .gabinete-cta:hover { gap: 0.9rem; }
+
+    /* ─── CURSOS DESTAQUE ────────────────────────────────────── */
+    #cursos { background: var(--hero-bg); border-top: 1px solid var(--border); }
+    .cursos-inner { max-width: 1200px; margin: 0 auto; }
+    .cursos-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .curso-card {
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      display: flex; flex-direction: column;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .curso-card:hover {
+      border-color: hsl(119,99%,46%,0.4);
+      transform: translateY(-4px);
+    }
+    .curso-badge {
+      display: inline-block;
+      background: hsl(119,99%,46%,0.12); color: var(--primary);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; padding: 0.3rem 0.65rem;
+      border-radius: 999px; margin-bottom: 1rem;
+      border: 1px solid hsl(119,99%,46%,0.25);
+    }
+    .curso-title {
+      font-size: 1rem; font-weight: 600; color: var(--fg);
+      letter-spacing: -0.01em; line-height: 1.35; flex: 1; margin-bottom: 1.25rem;
+    }
+    .curso-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+    .curso-price {
+      font-size: 1rem; font-weight: 700; color: var(--primary);
+    }
+    .curso-link {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted-fg);
+      transition: color 0.2s;
+    }
+    .curso-link:hover { color: var(--fg); }
+
+    /* ─── EQUIPA ─────────────────────────────────────────────── */
+    #equipa {
+      background: var(--hero-bg);
+      border-top: 1px solid var(--border);
+    }
+    .equipa-inner { max-width: 1200px; margin: 0 auto; }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .team-card {
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem 1.5rem; text-align: center;
+      transition: border-color 0.25s, transform 0.25s;
+      display: flex; flex-direction: column;
+      text-decoration: none; color: inherit;
+    }
+    .team-card:hover {
+      border-color: hsl(119,99%,46%,0.45);
+      transform: translateY(-3px);
+    }
+    .team-photo-wrap {
+      width: 80px; height: 80px; border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+      border: 2px solid hsl(119,99%,46%,0.35);
+      background: var(--muted);
+      flex-shrink: 0;
+    }
+    .team-photo-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .team-photo-wrap .team-initials {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 700; color: var(--primary);
+    }
+    .team-name {
+      font-size: 0.9rem; font-weight: 600; color: var(--fg); margin-bottom: 0.3rem;
+    }
+    .team-role {
+      font-size: 0.65rem; font-weight: 600; color: var(--primary); margin-bottom: 0.6rem;
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .team-bio {
+      font-size: 0.75rem; font-weight: 300; color: var(--muted-fg); line-height: 1.6;
+      flex: 1;
+    }
+    .team-card-link {
+      margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border);
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--primary);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .team-card:hover .team-card-link { filter: brightness(1.15); }
+
+    /* ─── PARCERIAS ──────────────────────────────────────────── */
+    #parcerias { background: var(--hero-bg); border-top: 1px solid var(--border); }
+    .parcerias-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+
+    .logos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+    .logo-card {
+      background: #fff;
+      border: 1px solid hsl(0,0%,88%);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 96px;
+      transition: border-color 0.25s, transform 0.25s,
+                  box-shadow 0.25s;
+    }
+    .logo-card:hover {
+      border-color: hsl(119,99%,46%,0.6);
+      box-shadow: 0 0 0 2px hsl(119,99%,46%,0.18),
+                  0 8px 24px rgba(0,0,0,0.25);
+      transform: translateY(-2px);
+    }
+    .logo-card img {
+      height: 72px; width: auto; max-width: 88%;
+      object-fit: contain; display: block;
+    }
+    .logo-card.logo-wide img {
+      height: auto; width: 100%; max-height: 60px;
+    }
+    @media (max-width: 640px) {
+      .logos-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem; }
+      .logo-card { min-height: 90px; padding: 1rem; }
+      .logo-card img { height: 56px; }
+      .logo-card.logo-wide img { height: auto; width: 100%; max-height: 48px; }
+    }
+
+    /* ─── CONTACTO ───────────────────────────────────────────── */
+    #contacto {
+      background: var(--hero-bg);
+      border-top: 1px solid var(--border);
+    }
+    .contacto-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start;
+    }
+    @media (max-width: 900px) { .contacto-inner { grid-template-columns: 1fr; gap: 3rem; } }
+
+    .contact-info-list { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2.5rem; }
+    .contact-info-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .contact-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: var(--muted); border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+    .contact-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--primary); margin-bottom: 0.2rem;
+    }
+    .contact-value {
+      font-size: 0.85rem; font-weight: 300; color: var(--fg);
+    }
+    .social-links {
+      display: flex; gap: 0.75rem; margin-top: 2rem;
+    }
+    .social-btn {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.65rem 1.1rem;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--fg);
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      text-decoration: none;
+    }
+    .social-btn:hover { border-color: var(--primary); color: var(--primary); background: hsl(119,99%,46%,0.06); }
+    .social-btn svg { flex-shrink: 0; }
+
+    /* contact form */
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted-fg);
+    }
+    .form-input, .form-textarea {
+      background: var(--secondary); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 0.75rem 1rem;
+      font-family: "Sora",sans-serif; font-size: 0.85rem; font-weight: 300;
+      color: var(--fg); outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: var(--primary); }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-submit {
+      background: var(--primary); color: var(--primary-fg);
+      font-family: "Sora",sans-serif; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.9rem 2rem; border-radius: 2px; border: none; cursor: pointer;
+      align-self: flex-start;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .form-submit:hover  { filter: brightness(1.1); }
+    .form-submit:active { transform: scale(0.97); }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--hero-bg); border-top: 1px solid var(--border);
+      padding: 2.5rem 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    @media (max-width: 768px) { footer { padding: 2rem 1.5rem; } }
+    .footer-logo {
+      font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .footer-logo span { color: var(--primary); }
+    .footer-copy {
+      font-size: 0.7rem; font-weight: 300; color: var(--muted-fg);
+    }
+    .footer-links {
+      display: flex; gap: 1.5rem; list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.7rem; font-weight: 400; color: var(--muted-fg);
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ─── SCROLL PROGRESS ────────────────────────────────────── */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 100;
+      height: 2px; background: var(--primary);
+      width: 0%;
+      pointer-events: none;
+      will-change: width;
+    }
+
+    /* ─── MOBILE MENU BUTTON ─────────────────────────────────── */
+    .menu-btn {
+      display: none;
+      background: var(--nav-btn); border: none; cursor: pointer;
+      padding: 0.5rem 0.6rem; border-radius: var(--radius); color: var(--fg);
+      font-size: 1.1rem; line-height: 1; transition: background 0.2s;
+    }
+    .menu-btn:hover { background: hsl(0,0%,24%); }
+    @media (max-width: 768px) { .menu-btn { display: block; } }
+
+    /* ─── MOBILE MENU PANEL ───────────────────────────────────── */
+    .mobile-menu {
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: hsla(0,0%,7%,0.98);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      opacity: 0; pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1);
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .mobile-nav-links { list-style: none; }
+    .mobile-nav-links a {
+      display: block; padding: 1rem 1.5rem;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted-fg);
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s, background 0.2s;
+    }
+    .mobile-nav-links a:hover { color: var(--fg); background: hsl(0,0%,12%); }
+    .mobile-cta-wrap { padding: 1.25rem 1.5rem; }
+    .mobile-cta-btn {
+      display: block; width: 100%;
+      background: var(--primary); color: var(--primary-fg);
+      font-family: "Sora",sans-serif; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.85rem; border-radius: 2px; border: none; cursor: pointer;
+      transition: filter 0.2s, transform 0.15s;
+    }
+    .mobile-cta-btn:hover  { filter: brightness(1.1); }
+    .mobile-cta-btn:active { transform: scale(0.98); }
+    @media (min-width: 769px) { .mobile-menu { display: none !important; } }
+
+    /* ─── RESPONSIVE FIXES ────────────────────────────────────── */
+
+    /* Nav logo: shorten on very small screens */
+    @media (max-width: 400px) {
+      .nav-logo { font-size: 0.85rem; }
+    }
+
+    /* Hero: center content on mobile */
+    @media (max-width: 600px) {
+      #hero { align-items: center; min-height: 100svh; }
+      .hero-content {
+        max-width: 100%;
+        padding: 5.5rem 1.5rem 3rem;
+      }
+      .hero-h1 {
+        font-size: clamp(1.75rem, 10vw, 2.8rem);
+        letter-spacing: -0.04em;
+      }
+      .hero-sub { font-size: clamp(0.95rem, 4vw, 1.2rem); }
+    }
+
+    /* Hero: full-width buttons on small screens */
+    @media (max-width: 480px) {
+      .hero-btns { flex-direction: column; gap: 0.6rem; }
+      .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+      .hero-trust { font-size: 0.62rem; }
+    }
+
+    /* Sobre: tighter value chips on small screens */
+    @media (max-width: 480px) {
+      .value-chip { padding: 0.6rem 0.75rem; font-size: 0.7rem; }
+      .stat-number { font-size: 2.2rem; }
+    }
+
+    /* Gabinete visual: min-height when stacked */
+    @media (max-width: 900px) {
+      .gabinete-visual { min-height: 260px; }
+    }
+
+    /* Team: 2 columns on mobile instead of 1 */
+    @media (max-width: 640px) {
+      .team-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .team-card { padding: 1.25rem 1rem; }
+      .team-photo-wrap { width: 64px; height: 64px; }
+      .team-bio { font-size: 0.7rem; line-height: 1.5; }
+    }
+
+
+    /* Social links: wrap on very small screens */
+    @media (max-width: 380px) {
+      .social-links { flex-direction: column; }
+    }
+
+    /* Footer: stack on mobile */
+    @media (max-width: 768px) {
+      footer { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+      .footer-links { flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+    }
+
+    /* divider line */
+    .divider {
+      width: 40px; height: 2px; background: var(--primary);
+      margin: 1rem 0 1.5rem;
+    }
+
+    /* ─── GRID BACKGROUND (all sections except hero) ─────────── */
+    #sobre, #formacoes, #gabinete, #cursos, #equipa, #parcerias, #contacto, footer {
+      position: relative;
+      isolation: isolate;
+    }
+    #sobre::before, #formacoes::before, #gabinete::before, #cursos::before,
+    #equipa::before, #parcerias::before, #contacto::before, footer::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 80% 20%, hsl(119,99%,46%,0.04) 0%, transparent 70%),
+        linear-gradient(hsl(0,0%,22%,0.12) 1px, transparent 1px),
+        linear-gradient(90deg, hsl(0,0%,22%,0.12) 1px, transparent 1px);
+      background-size: auto, 48px 48px, 48px 48px;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+      pointer-events: none;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Scroll progress bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ─── NAV ─────────────────────────────────────────────────── -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">IPC <span>·</span> Instituto Português de Criminologia</a>
+  <ul class="nav-links">
+    <li><a href="#gabinete">Gabinete</a></li>
+    <li><a href="#formacoes">Formações</a></li>
+    <li><a href="#sobre">Sobre Nós</a></li>
+    <li><a href="#equipa">Equipa</a></li>
+    <li><a href="#parcerias">Parcerias</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contactar</button>
+  <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul class="mobile-nav-links">
+      <li><a href="#gabinete">Gabinete</a></li>
+      <li><a href="#formacoes">Formações</a></li>
+      <li><a href="#sobre">Sobre Nós</a></li>
+      <li><a href="#equipa">Equipa</a></li>
+      <li><a href="#parcerias">Parcerias</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div class="mobile-cta-wrap">
+      <button class="mobile-cta-btn" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contactar</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-canvas-wrap">
+    <canvas id="heroCanvas"></canvas>
+  </div>
+  <div class="hero-overlay"></div>
+  <img class="hero-logo" src="logo.png" alt="Brasão IPC" />
+  <div class="hero-content">
+    <h1 class="hero-h1">INSTITUTO<br>PORTUGUÊS<br><span>DE CRIMINOLOGIA</span></h1>
+    <p class="hero-sub">A ciência multidisciplinar ao serviço da justiça.</p>
+    <p class="hero-desc">
+      Formação especializada, perícia forense e assessoria científica para profissionais
+      do direito, segurança e ciências criminais. Rigor, inovação e compromisso
+      com a verdade em cada caso.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('gabinete').scrollIntoView({behavior:'smooth'})">Gabinete Forense</button>
+      <button class="btn-secondary" onclick="document.getElementById('formacoes').scrollIntoView({behavior:'smooth'})">Ver Formações</button>
+    </div>
+    <p class="hero-trust">Parceiro de confiança · Vila do Conde, Portugal · Mais de 12 sistemas implementados</p>
+  </div>
+</section>
+
+<!-- ─── GABINETE ──────────────────────────────────────────────── -->
+<section id="gabinete">
+  <div class="gabinete-inner">
+    <p class="section-label reveal">Gabinete de Criminologia</p>
+    <h2 class="section-title reveal">Perícia forense<br><span>ao mais alto nível.</span></h2>
+    <div class="divider reveal"></div>
+    <p class="section-body reveal" style="max-width:60ch;">
+      O nosso gabinete especializado em ciências forenses e criminologia presta apoio
+      técnico-científico a entidades judiciais, policiais e privadas, com rigor,
+      imparcialidade e fundamentação científica.
+    </p>
+    <div class="gabinete-grid">
+      <div class="services-list stagger">
+        <a href="pericia-forense.html" class="service-item">
+          <div class="service-num">01</div>
+          <div>
+            <div class="service-name">Perícia Forense</div>
+            <div class="service-desc">Análise e investigação de cenas de crime, recolha de vestígios e elaboração de relatórios periciais para tribunais.</div>
+            <span class="service-item-arrow">Saber mais →</span>
+          </div>
+          <div class="service-photo">
+            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/pericia-forense-1x1-400p-300x300.jpg" alt="Perícia Forense" loading="lazy" />
+          </div>
+        </a>
+        <a href="acidentologia.html" class="service-item">
+          <div class="service-num">02</div>
+          <div>
+            <div class="service-name">Acidentologia</div>
+            <div class="service-desc">Investigação técnico-científica de acidentes de viação e análise forense de dinâmicas rodoviárias.</div>
+            <span class="service-item-arrow">Saber mais →</span>
+          </div>
+          <div class="service-photo">
+            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/acidentologia-1x1-400p-300x300.jpg" alt="Acidentologia" loading="lazy" />
+          </div>
+        </a>
+        <a href="assessoria-forense.html" class="service-item">
+          <div class="service-num">03</div>
+          <div>
+            <div class="service-name">Assessoria Forense</div>
+            <div class="service-desc">Consultoria especializada para processos judiciais, apoio à defesa e acusação com pareceres técnico-científicos.</div>
+            <span class="service-item-arrow">Saber mais →</span>
+          </div>
+          <div class="service-photo">
+            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/assessoria-forense-1x1-400p-300x300.jpg" alt="Assessoria Forense" loading="lazy" />
+          </div>
+        </a>
+        <a href="propriedade-industrial.html" class="service-item">
+          <div class="service-num">04</div>
+          <div>
+            <div class="service-name">Propriedade Industrial</div>
+            <div class="service-desc">Análise criminológica de casos de violação de propriedade industrial, contrafação e concorrência desleal.</div>
+            <span class="service-item-arrow">Saber mais →</span>
+          </div>
+          <div class="service-photo">
+            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/06/propriedade-industrial-1x1-400-300x300.jpg" alt="Propriedade Industrial" loading="lazy" />
+          </div>
+        </a>
+        <a href="#contacto" class="gabinete-cta">Submeter Caso <span>→</span></a>
+      </div>
+      <div class="reveal-right" style="display:flex; flex-direction:column;">
+        <div class="gabinete-visual">
+          <img src="lab.png" alt="Perícia forense — análise laboratorial" loading="lazy" />
+          <div class="gabinete-visual-overlay"></div>
+        </div>
+        <div class="sobre-mission" style="margin-top:1.5rem; flex-shrink:0;">
+          <h4>Como Funciona</h4>
+          <p>
+            Os clientes podem submeter casos através do nosso portal de contacto.
+            Peritos qualificados avaliarão o caso e fornecerão apoio técnico às
+            autoridades judiciais e policiais com base em critérios científicos rigorosos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FORMAÇÕES ─────────────────────────────────────────────── -->
+<section id="formacoes">
+  <div class="formacoes-inner">
+    <div class="formacoes-header">
+      <div>
+        <p class="section-label reveal">Áreas de Formação</p>
+        <h2 class="section-title reveal">Especialização<br><span>que transforma.</span></h2>
+      </div>
+      <p class="section-body reveal" style="max-width:36ch;">
+        Cursos e pós-graduações nas áreas das ciências criminais,
+        forenses e da segurança, <strong>ao abrigo da Lei n.º 70/2019</strong>.
+      </p>
+    </div>
+    <div class="areas-grid stagger">
+      <div class="area-card">
+        <span class="area-icon">🔍</span>
+        <div class="area-name">Criminologia</div>
+        <div class="area-desc">Estudo das causas do crime e investigação criminológica ao abrigo da Lei 70/2019.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">🧪</span>
+        <div class="area-name">Criminalística</div>
+        <div class="area-desc">Técnicas de recolha de vestígios incluindo balística e toxicologia forense.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">⚖️</span>
+        <div class="area-name">Direito</div>
+        <div class="area-desc">Enquadramento jurídico e participação em perícias e processos judiciais.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">🧠</span>
+        <div class="area-name">Psicologia</div>
+        <div class="area-desc">Compreensão do comportamento criminal e avaliação forense de vítimas e arguidos.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">🛡️</span>
+        <div class="area-name">Ciências Policiais</div>
+        <div class="area-desc">Métodos operacionais e estratégias de prevenção criminal para forças de segurança.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">🔬</span>
+        <div class="area-name">Ciências Forenses</div>
+        <div class="area-desc">Aplicação das ciências naturais na produção de prova e análise pericial.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">💻</span>
+        <div class="area-name">Cibersegurança</div>
+        <div class="area-desc">Investigação de cibercrime e proteção de dados em ambiente digital.</div>
+      </div>
+      <div class="area-card">
+        <span class="area-icon">🌐</span>
+        <div class="area-name">Sociologia</div>
+        <div class="area-desc">Interação social, delinquência e desenvolvimento de políticas de prevenção.</div>
+      </div>
+    </div>
+
+    <!-- Featured courses -->
+    <div style="margin-top:5rem;">
+      <p class="section-label reveal">Formações em Destaque</p>
+      <h3 class="section-title reveal" style="font-size:clamp(1.5rem,3vw,2.2rem);">Próximas Edições</h3>
+      <div class="cursos-grid stagger">
+        <div class="curso-card">
+          <span class="curso-badge">Software</span>
+          <div class="curso-title">iCFVIAL — Software de Segurança Rodoviária</div>
+          <div class="curso-footer">
+            <span class="curso-price">Consultar</span>
+            <span class="curso-link">Saber Mais →</span>
+          </div>
+        </div>
+        <div class="curso-card">
+          <span class="curso-badge">6ª Edição</span>
+          <div class="curso-title">Gestão Local do Crime — Curso Completo</div>
+          <div class="curso-footer">
+            <span class="curso-price">€69 – €99</span>
+            <span class="curso-link">Inscrever →</span>
+          </div>
+        </div>
+        <div class="curso-card">
+          <span class="curso-badge">Seminário</span>
+          <div class="curso-title">Seminário da Polícia Judiciária Militar</div>
+          <div class="curso-footer">
+            <span class="curso-price">Consultar</span>
+            <span class="curso-link">Saber Mais →</span>
+          </div>
+        </div>
+        <div class="curso-card">
+          <span class="curso-badge">Pós-Graduação</span>
+          <div class="curso-title">Psicologia Forense — Pós-Graduação</div>
+          <div class="curso-footer">
+            <span class="curso-price">Consultar</span>
+            <span class="curso-link">Saber Mais →</span>
+          </div>
+        </div>
+        <div class="curso-card">
+          <span class="curso-badge">Webinar</span>
+          <div class="curso-title">Introdução à Medicina Legal</div>
+          <div class="curso-footer">
+            <span class="curso-price">Gratuito</span>
+            <span class="curso-link">Inscrever →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SOBRE ─────────────────────────────────────────────────── -->
+<section id="sobre">
+  <div class="sobre-grid">
+    <div>
+      <p class="section-label reveal">Sobre Nós</p>
+      <h2 class="section-title reveal">Ciência criminal<br><span>com propósito.</span></h2>
+      <div class="divider reveal"></div>
+      <p class="section-body reveal">
+        O Instituto Português de Criminologia emergiu de um projeto multidisciplinar no
+        domínio do conhecimento criminológico, funcionando como instrumento técnico-científico
+        de investigação. Integramos formação profissional de excelência com serviços forenses
+        de elevada especialização.
+      </p>
+      <div class="sobre-mission reveal">
+        <h4>Missão</h4>
+        <p>
+          Liderar a formação profissional qualificada nas áreas da criminologia, ciências
+          forenses e segurança, mantendo rigor científico e competência técnica que supere
+          as expectativas dos nossos formandos e contribua para uma justiça mais eficaz.
+        </p>
+      </div>
+      <div class="sobre-values stagger reveal" style="margin-top:1.5rem;">
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          Rigor
+        </div>
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Partilha
+        </div>
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14z"/></svg>
+          Inovação
+        </div>
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Compromisso
+        </div>
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          Transparência
+        </div>
+        <div class="value-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+          Competência
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="stats-grid stagger reveal">
+        <div class="stat-card">
+          <div class="stat-number">8+</div>
+          <div class="stat-label">Áreas de Formação</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">12+</div>
+          <div class="stat-label">Sistemas Implementados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">6ª</div>
+          <div class="stat-label">Edição do Curso de Gestão Local do Crime</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Serviços Forenses Especializados</div>
+        </div>
+      </div>
+      <div class="sobre-mission reveal" style="margin-top:1.5rem;">
+        <h4>Visão</h4>
+        <p>
+          A excelência contínua nos serviços é o princípio orientador da nossa distinção,
+          tanto na formação como na elaboração de relatórios periciais — contribuindo para
+          decisões judiciais fundamentadas na verdade científica.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EQUIPA ────────────────────────────────────────────────── -->
+<section id="equipa">
+  <div class="equipa-inner">
+    <p class="section-label reveal">A Nossa Equipa</p>
+    <h2 class="section-title reveal">Especialistas<br><span>dedicados à justiça.</span></h2>
+    <div class="divider reveal"></div>
+    <div class="team-grid stagger">
+      <a class="team-card" href="membro.html?id=miguel-silva">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/miguel-silva-300.jpg" alt="Miguel Silva" loading="lazy" />
+        </div>
+        <div class="team-name">Miguel Silva</div>
+        <div class="team-role">Diretor</div>
+        <div class="team-bio">Criminologista, Doutorado em Criminologia e Presidente da APC. Professor na Universidade Lusíada do Norte.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=joao-barrigas">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/joao-barrigas-300.jpg" alt="João Barrigas" loading="lazy" />
+        </div>
+        <div class="team-name">João Barrigas</div>
+        <div class="team-role">Diretor Adjunto</div>
+        <div class="team-bio">Doutorado pela Universidade de Vigo. Docente desde 1990. Professor Auxiliar na UTAD.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=ricardo-santos">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/ricardo-santos-300.jpg" alt="Ricardo Santos" loading="lazy" />
+        </div>
+        <div class="team-name">Ricardo Santos</div>
+        <div class="team-role">Diretor Adjunto</div>
+        <div class="team-bio">Economista pela Universidade Católica. Ex-deputado parlamentar e signatário da Lei de Criminologia.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=jose-alba-robles">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/jose-robles-300.jpg" alt="José Luís Alba Robles" loading="lazy" />
+        </div>
+        <div class="team-name">José Luís Alba Robles</div>
+        <div class="team-role">Coord. Científico</div>
+        <div class="team-bio">Presidente da IBERACRIMA. Professor na Universidade de Valência. Especialista em delinquência juvenil e crime organizado.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=mercedes-alvarez-segui">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/mercedes-segui-300.jpg" alt="Mercedes Álvarez Seguí" loading="lazy" />
+        </div>
+        <div class="team-name">Mercedes Álvarez Seguí</div>
+        <div class="team-role">Perita / Docente</div>
+        <div class="team-bio">Médica especialista em Medicina Legal e Forense. Diretora de Genética Forense desde 2000.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=miguel-velasquez">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/miguel-velasquez-300.jpg" alt="Miguel Velásquez" loading="lazy" />
+        </div>
+        <div class="team-name">Miguel E. Velásquez</div>
+        <div class="team-role">Perito / Docente</div>
+        <div class="team-bio">Médico especialista em Medicina Forense. Presidente da Associação de Medicina Legal de El Salvador.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=carlos-aldecoa">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/carlos-aldecoa-300.jpg" alt="Carlos Aldecoa" loading="lazy" />
+        </div>
+        <div class="team-name">Carlos Aldecoa</div>
+        <div class="team-role">Docente</div>
+        <div class="team-bio">Ex-oficial do Exército Argentino. Especialista em prevenção situacional do crime. MBA pela UPC.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=jose-gonzalez">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/jose-gonzalez-300.jpg" alt="Jose María González" loading="lazy" />
+        </div>
+        <div class="team-name">José M. González</div>
+        <div class="team-role">Perito / Docente</div>
+        <div class="team-bio">Diretor do Observatório Criminológico de Segurança Rodoviária. Autor de "Criminología Vial".</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=alice-craveiro">
+        <div class="team-photo-wrap">
+          <img src="https://ipcriminologia.pt/wp-content/uploads/2024/12/49fe8393-700d-4f54-834a-a09e95e5e603-1.jpg" alt="Alice Craveiro" loading="lazy" />
+        </div>
+        <div class="team-name">Alice Craveiro</div>
+        <div class="team-role">Perita / Docente</div>
+        <div class="team-bio">Licenciada em Criminologia pela UFP. Especialização em tráfico de droga e crime organizado.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+      <a class="team-card" href="membro.html?id=miguel-gomes">
+        <div class="team-photo-wrap">
+          <div class="team-initials">MG</div>
+        </div>
+        <div class="team-name">Miguel Gomes</div>
+        <div class="team-role">Coord. de Formação</div>
+        <div class="team-bio">Licenciado em Relações Internacionais. Instrutor de formação certificado. Assembleiro Municipal de Vila do Conde.</div>
+        <div class="team-card-link">Ver perfil →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PARCERIAS ─────────────────────────────────────────────── -->
+<section id="parcerias">
+  <div class="parcerias-inner">
+    <p class="section-label reveal">Parcerias Institucionais</p>
+    <h2 class="section-title reveal">Uma rede de <span>confiança.</span></h2>
+    <p class="section-body reveal" style="margin: 0 auto 1rem;">
+      Colaboramos com as mais importantes instituições portuguesas e internacionais
+      nas áreas da criminologia, segurança e ciências forenses.
+    </p>
+    <div class="logos-grid stagger">
+      <div class="logo-card">
+        <img src="parcerias/Gabinete-Criminologia.jpg" alt="Gabinete de Criminologia e Ciências Forenses" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/logo-apc.png" alt="APC — Associação Portuguesa de Criminologia" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/logo-ibercrima.jpg" alt="IBERACRIMA" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/Logo-Forum-INTEGRA-letras-pretas-768x432.png" alt="Fórum Integra" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/logo-sindicatopm.png" alt="Sindicato da Polícia de Segurança Pública" />
+      </div>
+      <div class="logo-card logo-wide">
+        <img src="parcerias/logo-sindicatospj.png" alt="Sindicato da Polícia Judiciária" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/logotipo_medio_grande-768x791.jpg" alt="Parceria Institucional" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/images.png" alt="Parceria" />
+      </div>
+      <div class="logo-card">
+        <img src="parcerias/crime-logica.png" alt="Crime &amp; Lógica — Preventive Solutions" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACTO ──────────────────────────────────────────────── -->
+<section id="contacto">
+  <div class="contacto-inner">
+    <div>
+      <p class="section-label reveal">Contacto</p>
+      <h2 class="section-title reveal">Fale <span>connosco.</span></h2>
+      <div class="divider reveal"></div>
+      <p class="section-body reveal">
+        Para formações, submissão de casos ou parcerias institucionais,
+        entre em contacto através dos canais abaixo.
+      </p>
+      <div class="contact-info-list stagger">
+        <div class="contact-info-item">
+          <div class="contact-icon">📞</div>
+          <div>
+            <div class="contact-label">Telefone</div>
+            <div class="contact-value">(+351) 928 355 468</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">✉️</div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value">geral@ipcriminologia.pt</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <div class="contact-label">Horário</div>
+            <div class="contact-value">Segunda a Sexta, 9h00 – 15h30</div>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-label">Morada</div>
+            <div class="contact-value">Apartado 076, 4481-909 Vila do Conde</div>
+          </div>
+        </div>
+      </div>
+      <div class="social-links">
+        <a class="social-btn" href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          Facebook
+        </a>
+        <a class="social-btn" href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <form class="contact-form" onsubmit="return false;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-input" placeholder="O seu nome" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" placeholder="email@exemplo.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Assunto</label>
+          <input type="text" class="form-input" placeholder="Formação / Gabinete / Parceria" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mensagem</label>
+          <textarea class="form-textarea" placeholder="Descreva a sua necessidade..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Enviar Mensagem</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">IPC <span>·</span> Instituto Português de Criminologia</div>
+  <p class="footer-copy">© 2026 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="#">Política de Privacidade</a></li>
+    <li><a href="#">Termos de Uso</a></li>
+    <li><a href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Facebook</a></li>
+    <li><a href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
+</footer>
+
+<script>
+  /* ─── HERO CANVAS ANIMATION ────────────────────── */
+  (function () {
+    const canvas = document.getElementById('heroCanvas');
+    const ctx    = canvas.getContext('2d');
+
+    /* ISO CUBE GRID ─────────────────────────────── */
+    const COLS   = 14;
+    const ROWS   = 10;
+    let W, H, S, OX, OY;   // S = cell size, OX/OY = grid origin
+
+    /* Each cell has a height (0..1) that animates */
+    const cells = [];
+    function initCells() {
+      cells.length = 0;
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          cells.push({
+            r, c,
+            h:     Math.random(),        /* current height fraction */
+            target:Math.random(),        /* target height */
+            speed: 0.002 + Math.random() * 0.004,
+            accent: Math.random() < 0.06 /* green highlight? */
+          });
+        }
+      }
+    }
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+      /* cell size so grid fills width */
+      S  = Math.round(W / (COLS + ROWS * 0.5) * 0.95);
+      /* isometric origin: centre-top */
+      OX = W * 0.5;
+      OY = H * 0.14;
+    }
+
+    /* iso projection: grid col/row → screen x/y */
+    function iso(c, r) {
+      return {
+        x: OX + (c - r) * S,
+        y: OY + (c + r) * S * 0.5
+      };
+    }
+
+    /* draw one isometric box */
+    function drawBox(c, r, h) {
+      const top = h * S * 0.55;   /* height in px */
+      const p   = iso(c, r);
+      const p1  = iso(c + 1, r);
+      const p2  = iso(c + 1, r + 1);
+      const p3  = iso(c, r + 1);
+
+      const isAccent = cells[r * COLS + c].accent;
+
+      /* top face */
+      const topLight = isAccent ? `rgba(2,235,1,${0.12 + h * 0.10})` : `rgba(255,255,255,${0.04 + h * 0.04})`;
+      ctx.beginPath();
+      ctx.moveTo(p.x,  p.y  - top);
+      ctx.lineTo(p1.x, p1.y - top);
+      ctx.lineTo(p2.x, p2.y - top);
+      ctx.lineTo(p3.x, p3.y - top);
+      ctx.closePath();
+      ctx.fillStyle = topLight;
+      ctx.fill();
+
+      /* left face */
+      ctx.beginPath();
+      ctx.moveTo(p.x,  p.y  - top);
+      ctx.lineTo(p3.x, p3.y - top);
+      ctx.lineTo(p3.x, p3.y);
+      ctx.lineTo(p.x,  p.y);
+      ctx.closePath();
+      ctx.fillStyle = isAccent ? `rgba(2,235,1,${0.06 + h * 0.06})` : `rgba(255,255,255,${0.02 + h * 0.02})`;
+      ctx.fill();
+
+      /* right face */
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y - top);
+      ctx.lineTo(p2.x, p2.y - top);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.lineTo(p1.x, p1.y);
+      ctx.closePath();
+      ctx.fillStyle = isAccent ? `rgba(2,235,1,${0.03 + h * 0.04})` : `rgba(0,0,0,${0.12 + h * 0.08})`;
+      ctx.fill();
+
+      /* edges */
+      const edgeColor = isAccent ? `rgba(2,235,1,${0.25 + h * 0.2})` : `rgba(255,255,255,${0.06 + h * 0.04})`;
+      ctx.strokeStyle = edgeColor;
+      ctx.lineWidth   = 0.5;
+
+      /* top outline */
+      ctx.beginPath();
+      ctx.moveTo(p.x,  p.y  - top);
+      ctx.lineTo(p1.x, p1.y - top);
+      ctx.lineTo(p2.x, p2.y - top);
+      ctx.lineTo(p3.x, p3.y - top);
+      ctx.closePath();
+      ctx.stroke();
+
+      /* vertical edges from corners */
+      [[p, p],[p3,p3],[p1,p1]].forEach(([pt]) => {
+        ctx.beginPath();
+        ctx.moveTo(pt.x, pt.y - top);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.stroke();
+      });
+    }
+
+    let raf;
+    function draw(ts) {
+      ctx.clearRect(0, 0, W, H);
+
+      /* gradient background */
+      const grd = ctx.createRadialGradient(W * 0.6, H * 0.25, 0, W * 0.6, H * 0.25, W * 0.7);
+      grd.addColorStop(0, 'rgba(2,60,2,0.18)');
+      grd.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, W, H);
+
+      /* update cell heights */
+      for (const cell of cells) {
+        cell.h += (cell.target - cell.h) * cell.speed * 60 * (1 / 60);
+        if (Math.abs(cell.h - cell.target) < 0.01) {
+          cell.target = Math.random() * 0.85 + 0.05;
+        }
+      }
+
+      /* draw back-to-front (painter's algorithm) */
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          drawBox(c, r, cells[r * COLS + c].h);
+        }
+      }
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    /* pause when tab is hidden */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { cancelAnimationFrame(raf); }
+      else                  { raf = requestAnimationFrame(draw); }
+    });
+
+    /* pause when hero is out of view (user scrolled past) */
+    const heroSection = document.getElementById('hero');
+    const heroObs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { raf = requestAnimationFrame(draw); }
+      else                       { cancelAnimationFrame(raf); }
+    }, { threshold: 0 });
+    heroObs.observe(heroSection);
+
+    window.addEventListener('resize', () => { resize(); }, { passive: true });
+
+    resize();
+    initCells();
+    raf = requestAnimationFrame(draw);
+  })();
+
+  /* ─── SCROLL: single rAF loop ──────────────────── */
+  const prog   = document.getElementById('scrollProgress');
+  const navbar = document.getElementById('navbar');
+  let ticking  = false;
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const sy  = window.scrollY;
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (sy / max * 100) + '%';
+        navbar.classList.toggle('scrolled', sy > 60);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ─── INTERSECTION OBSERVER ────────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); /* fire once, then stop watching */
+      }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger').forEach(el => {
+    observer.observe(el);
+  });
+
+  /* ─── MOBILE MENU TOGGLE ────────────────────── */
+  const menuBtn    = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove('open');
+    menuBtn.textContent = '☰';
+    menuBtn.setAttribute('aria-expanded', 'false');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+  }
+
+  menuBtn.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    menuBtn.textContent = isOpen ? '✕' : '☰';
+    menuBtn.setAttribute('aria-expanded', String(isOpen));
+    mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+  });
+
+  mobileMenu.querySelectorAll('a, .mobile-cta-btn').forEach(el => {
+    el.addEventListener('click', closeMobileMenu);
+  });
+
+  /* close on outside tap */
+  document.addEventListener('click', e => {
+    if (!e.target.closest('nav')) closeMobileMenu();
+  });
+</script>
+</body>
+</html>
