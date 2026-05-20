@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formação — Instituto Português de Criminologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    :root {
+      --bg: hsl(0,0%,10%);
+      --hero-bg: hsl(0,0%,8%);
+      --fg: hsl(0,0%,96%);
+      --primary: hsl(119,99%,46%);
+      --primary-fg: hsl(0,0%,4%);
+      --secondary: hsl(0,0%,18%);
+      --muted: hsl(0,0%,16%);
+      --muted-fg: hsl(0,0%,60%);
+      --border: hsl(0,0%,20%);
+      --nav-btn: hsl(0,0%,18%);
+      --radius: 0.5rem;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+    body { font-family: "Sora", sans-serif; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    @keyframes fade-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .stagger > * { opacity: 0; transform: translateY(22px); transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1); }
+    .stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0.04s; }
+    .stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.10s; }
+    .stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.16s; }
+    .stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.22s; }
+    .stagger.visible > *:nth-child(n+5) { opacity:1; transform:none; transition-delay:0.28s; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 4rem; transition: background 0.3s ease, border-color 0.3s ease; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: hsla(0,0%,8%,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom-color: var(--border); }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta { background: var(--nav-btn); color: var(--fg); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.6rem 1.5rem; border-radius: var(--radius); border: none; cursor: pointer; transition: background 0.2s; display: inline-block; }
+    .nav-cta:hover { background: hsl(0,0%,24%); }
+    @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links, .nav-cta { display: none; } }
+
+    .menu-btn { display: none; background: var(--nav-btn); border: none; cursor: pointer; padding: 0.5rem 0.6rem; border-radius: var(--radius); color: var(--fg); font-size: 1.1rem; line-height: 1; transition: background 0.2s; }
+    @media (max-width: 768px) { .menu-btn { display: block; } }
+    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; background: hsla(0,0%,7%,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .mobile-nav-links { list-style: none; }
+    .mobile-nav-links a { display: block; padding: 1rem 1.5rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); border-bottom: 1px solid var(--border); transition: color 0.2s, background 0.2s; }
+    .mobile-nav-links a:hover { color: var(--fg); background: hsl(0,0%,12%); }
+    .mobile-cta-wrap { padding: 1.25rem 1.5rem; }
+    .mobile-cta-btn { display: block; width: 100%; background: var(--primary); color: var(--primary-fg); font-family: "Sora",sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.85rem; border-radius: 2px; border: none; cursor: pointer; text-decoration: none; text-align: center; }
+    @media (min-width: 769px) { .mobile-menu { display: none !important; } }
+
+    .scroll-progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; background: var(--primary); width: 0%; pointer-events: none; }
+
+    .btn-primary { background: var(--primary); color: var(--primary-fg); font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 2rem; border-radius: 2px; border: none; cursor: pointer; transition: filter 0.2s, transform 0.15s; display: inline-block; }
+    .btn-primary:hover { filter: brightness(1.1); }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-ghost { background: transparent; color: var(--fg); font-family: "Sora",sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.85rem 2rem; border-radius: 2px; border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s, color 0.2s, transform 0.15s; display: inline-block; }
+    .btn-ghost:hover { border-color: hsl(119,99%,46%,0.5); color: var(--primary); }
+
+    .section-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; }
+    .section-title { font-size: clamp(2rem,4vw,3.2rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; color: var(--fg); margin-bottom: 1.25rem; }
+    .section-title span { color: var(--primary); }
+    .section-body { font-size: clamp(0.875rem,1.4vw,1.05rem); font-weight: 300; color: var(--muted-fg); line-height: 1.75; }
+    .divider { width: 40px; height: 2px; background: var(--primary); margin: 1rem 0 1.5rem; }
+
+    footer { background: var(--hero-bg); border-top: 1px solid var(--border); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    @media (max-width: 768px) { footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.25rem; } }
+    .footer-logo { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+    .footer-logo span { color: var(--primary); }
+    .footer-copy { font-size: 0.7rem; font-weight: 300; color: var(--muted-fg); }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.7rem; font-weight: 400; color: var(--muted-fg); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* PAGE HERO */
+    .page-hero { position: relative; min-height: 65vh; display: flex; align-items: center; background: var(--hero-bg); overflow: hidden; padding-top: 80px; border-bottom: 1px solid var(--border); }
+    .page-hero-bg { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(ellipse 60% 60% at 78% 50%, hsl(119,99%,46%,0.08) 0%, transparent 70%), linear-gradient(hsl(0,0%,22%,0.10) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.10) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 4rem; display: grid; grid-template-columns: 1fr auto; gap: 4rem; align-items: center; }
+    @media (max-width: 900px) { .page-hero-inner { grid-template-columns: 1fr; padding: 2rem 1.5rem 3.5rem; gap: 2.5rem; } }
+    .breadcrumb { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-fg); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.75rem; flex-wrap: wrap; opacity: 0; animation: fade-in 0.5s ease 0.05s forwards; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb-sep { color: hsl(0,0%,35%); }
+    .breadcrumb-current { color: var(--fg); }
+    .page-h1 { font-size: clamp(2.8rem,6vw,5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.04em; color: var(--fg); margin-bottom: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
+    .page-desc { font-size: clamp(0.95rem,1.8vw,1.15rem); font-weight: 300; color: var(--muted-fg); line-height: 1.7; max-width: 50ch; margin-bottom: 2rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s forwards; }
+    .page-hero-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.5rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s forwards; }
+    .meta-pill { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 500; color: var(--muted-fg); background: var(--secondary); border: 1px solid var(--border); border-radius: 2rem; padding: 0.35rem 0.9rem; }
+    .meta-pill.accent { color: var(--primary); border-color: hsl(119,99%,46%,0.3); background: hsl(119,99%,46%,0.08); }
+    .page-hero-btns { display: flex; flex-wrap: wrap; gap: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; }
+    .formacao-img-wrap { width: 260px; height: 260px; border-radius: 50%; overflow: hidden; border: 2px solid hsl(119,99%,46%,0.35); box-shadow: 0 0 0 8px hsl(119,99%,46%,0.07), 0 0 60px hsl(119,99%,46%,0.12), 0 32px 64px rgba(0,0,0,0.5); background: var(--muted); opacity: 0; animation: fade-in 0.8s ease 0.5s forwards; flex-shrink: 0; }
+    .formacao-img-wrap img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(15%) contrast(1.1); }
+    @media (max-width: 900px) { .formacao-img-wrap { width: 200px; height: 200px; margin: 0 auto; } }
+
+    /* CONTENT SECTIONS */
+    .content-section { padding: 5rem 4rem; border-top: 1px solid var(--border); position: relative; isolation: isolate; }
+    .content-section.alt { background: var(--hero-bg); }
+    @media (max-width: 768px) { .content-section { padding: 4rem 1.5rem; } }
+    .content-section::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(ellipse 60% 50% at 80% 20%, hsl(119,99%,46%,0.04) 0%, transparent 70%), linear-gradient(hsl(0,0%,22%,0.12) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.12) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); pointer-events: none; z-index: -1; }
+    .content-inner { max-width: 1200px; margin: 0 auto; }
+
+    /* RICH TEXT / PORTABLE TEXT */
+    .rich-text { font-size: clamp(0.875rem,1.4vw,1.05rem); font-weight: 300; color: var(--muted-fg); line-height: 1.75; max-width: 72ch; }
+    .rich-text p { margin-bottom: 1.25em; }
+    .rich-text p:last-child { margin-bottom: 0; }
+    .rich-text h2 { font-size: clamp(1.4rem,2.5vw,2rem); font-weight: 700; letter-spacing: -0.03em; color: var(--fg); margin: 2em 0 0.6em; line-height: 1.2; }
+    .rich-text h3 { font-size: clamp(1.1rem,2vw,1.4rem); font-weight: 600; letter-spacing: -0.02em; color: var(--fg); margin: 1.75em 0 0.5em; line-height: 1.3; }
+    .rich-text h4 { font-size: 1rem; font-weight: 600; color: var(--fg); margin: 1.5em 0 0.4em; }
+    .rich-text strong { font-weight: 600; color: var(--fg); }
+    .rich-text em { font-style: italic; }
+    .rich-text a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+    .rich-text ul, .rich-text ol { padding-left: 1.5em; margin-bottom: 1.25em; display: flex; flex-direction: column; gap: 0.4em; }
+    .rich-text li { line-height: 1.65; }
+    .rich-text blockquote { border-left: 3px solid var(--primary); padding: 1rem 1.5rem; background: var(--muted); border-radius: 0 var(--radius) var(--radius) 0; margin: 1.5em 0; font-style: italic; color: var(--fg); }
+
+    /* INFO CARDS */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2.5rem; }
+    @media (max-width: 700px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-card { background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; transition: border-color 0.25s; }
+    .info-card:hover { border-color: hsl(119,99%,46%,0.35); }
+    .info-card-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.5rem; }
+    .info-card-value { font-size: 1.05rem; font-weight: 600; color: var(--fg); }
+
+    /* CTA */
+    .cta-section { background: var(--hero-bg); border-top: 1px solid var(--border); padding: 6rem 4rem; position: relative; overflow: hidden; isolation: isolate; }
+    @media (max-width: 768px) { .cta-section { padding: 4rem 1.5rem; } }
+    .cta-section::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 60% at 50% 50%, hsl(119,99%,46%,0.09) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+    .cta-section::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(hsl(0,0%,22%,0.10) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.10) 1px, transparent 1px); background-size: 48px 48px, 48px 48px; pointer-events: none; z-index: -1; }
+    .cta-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+    .cta-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 1.25rem; }
+    .cta-title { font-size: clamp(2rem,4vw,3.5rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; color: var(--fg); margin-bottom: 1.25rem; }
+    .cta-title span { color: var(--primary); }
+    .cta-body { font-size: clamp(0.875rem,1.4vw,1rem); font-weight: 300; color: var(--muted-fg); line-height: 1.75; margin-bottom: 2.5rem; max-width: 52ch; margin-left: auto; margin-right: auto; }
+    .cta-actions { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .cta-contacts { display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; }
+    .cta-contact-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 300; color: var(--muted-fg); }
+    .cta-contact-item strong { color: var(--fg); font-weight: 500; }
+
+    /* LOADING / NOT FOUND */
+    .state-center { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center; padding-top: 120px; }
+    .state-icon { font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.5; }
+    .state-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; color: var(--fg); margin-bottom: 0.75rem; }
+    .state-body { font-size: 0.9rem; font-weight: 300; color: var(--muted-fg); line-height: 1.7; max-width: 40ch; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.75s linear infinite; margin-bottom: 1.5rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">IPC <span>·</span> Instituto Português de Criminologia</a>
+  <ul class="nav-links">
+    <li><a href="index.html#formacoes">Formações</a></li>
+    <li><a href="index.html#gabinete">Gabinete</a></li>
+    <li><a href="index.html#equipa">Equipa</a></li>
+    <li><a href="index.html#parcerias">Parcerias</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+  <a href="index.html#contacto" class="nav-cta">Contactar</a>
+  <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html#formacoes">Formações</a></li>
+      <li><a href="index.html#gabinete">Gabinete</a></li>
+      <li><a href="index.html#equipa">Equipa</a></li>
+      <li><a href="index.html#parcerias">Parcerias</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+    <div class="mobile-cta-wrap">
+      <a class="mobile-cta-btn" href="index.html#contacto">Contactar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- LOADING STATE -->
+<div id="stateLoading" class="state-center">
+  <div class="spinner"></div>
+  <p class="state-body">A carregar formação…</p>
+</div>
+
+<!-- NOT FOUND STATE -->
+<div id="stateNotFound" class="state-center hidden">
+  <div class="state-icon">🔍</div>
+  <h1 class="state-title">Página não encontrada</h1>
+  <p class="state-body" id="notFoundMsg">A formação não existe ou foi removida.</p>
+  <a href="index.html#formacoes" class="btn-primary" style="margin-top:2rem;">Ver todas as formações</a>
+</div>
+
+<!-- PAGE CONTENT (hidden until data loads) -->
+<div id="pageContent" class="hidden">
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner">
+      <div>
+        <div class="breadcrumb">
+          <a href="index.html">Início</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="index.html#formacoes">Formações</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current" id="breadcrumbTitle"></span>
+        </div>
+        <div id="heroPills" class="page-hero-meta"></div>
+        <h1 class="page-h1" id="heroTitle"></h1>
+        <p class="page-desc" id="heroDesc"></p>
+        <div class="page-hero-btns">
+          <a href="index.html#contacto" class="btn-primary">Inscrever-me</a>
+          <a href="index.html#formacoes" class="btn-ghost">Ver Formações</a>
+        </div>
+      </div>
+      <div class="formacao-img-wrap">
+        <img id="heroImg" src="" alt="" loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <!-- INFO CARDS -->
+  <section id="sectionInfo" class="content-section alt hidden">
+    <div class="content-inner">
+      <p class="section-label reveal">Informações</p>
+      <h2 class="section-title reveal">Detalhes da <span>Formação</span></h2>
+      <div class="divider reveal"></div>
+      <div id="infoGrid" class="info-grid stagger"></div>
+    </div>
+  </section>
+
+  <!-- CONTEÚDO / PROGRAMA -->
+  <section id="sectionConteudo" class="content-section hidden">
+    <div class="content-inner">
+      <p class="section-label reveal">Programa</p>
+      <h2 class="section-title reveal">Conteúdo da <span>Formação</span></h2>
+      <div class="divider reveal"></div>
+      <div id="richText" class="rich-text reveal"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <p class="cta-label reveal">Interessado nesta formação?</p>
+      <h2 class="cta-title reveal">Inscreva-se.<br><span>Respondemos em 48h.</span></h2>
+      <p class="cta-body reveal">Entre em contacto connosco para mais informações ou para efectuar a sua inscrição. A nossa equipa responde a todos os contactos em 48 horas úteis.</p>
+      <div class="cta-actions reveal">
+        <a href="index.html#contacto" class="btn-primary">Inscrever-me →</a>
+        <div class="cta-contacts">
+          <div class="cta-contact-item">📞 <strong>(+351) 928 355 468</strong></div>
+          <div class="cta-contact-item">✉ <strong>geral@ipcriminologia.pt</strong></div>
+          <div class="cta-contact-item">🕐 <strong>Seg–Sex, 9h00–15h30</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="footer-logo">IPC <span>·</span> Instituto Português de Criminologia</div>
+  <p class="footer-copy">© 2026 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="index.html#formacoes">Formações</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+    <li><a href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Facebook</a></li>
+    <li><a href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
+</footer>
+
+<script>
+(function () {
+  var PROJECT = 'dlel582r';
+  var DATASET = 'production';
+  var CDN     = 'https://' + PROJECT + '.api.sanity.io/v2024-01-01/data/query/' + DATASET;
+
+  var el = {
+    loading:       document.getElementById('stateLoading'),
+    notFound:      document.getElementById('stateNotFound'),
+    notFoundMsg:   document.getElementById('notFoundMsg'),
+    page:          document.getElementById('pageContent'),
+    breadcrumb:    document.getElementById('breadcrumbTitle'),
+    pills:         document.getElementById('heroPills'),
+    title:         document.getElementById('heroTitle'),
+    desc:          document.getElementById('heroDesc'),
+    img:           document.getElementById('heroImg'),
+    sectionInfo:   document.getElementById('sectionInfo'),
+    infoGrid:      document.getElementById('infoGrid'),
+    sectionConts:  document.getElementById('sectionConteudo'),
+    richText:      document.getElementById('richText'),
+    scrollBar:     document.getElementById('scrollProgress'),
+    navbar:        document.getElementById('navbar'),
+    menuBtn:       document.getElementById('menuBtn'),
+    mobileMenu:    document.getElementById('mobileMenu')
+  };
+
+  /* ── Helper: create element ── */
+  function h(tag, className) {
+    var e = document.createElement(tag);
+    if (className) e.className = className;
+    return e;
+  }
+
+  /* ── Get slug from ?slug= or from path (legacy /slug.html) ── */
+  function getSlug() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('slug')) return params.get('slug');
+    var path = window.location.pathname.replace(/^\//, '').replace(/\.html$/, '');
+    if (path && path !== 'formacao') return path;
+    return null;
+  }
+
+  /* ── Sanity GROQ query ── */
+  function groq(query, params) {
+    var url = CDN + '?query=' + encodeURIComponent(query);
+    if (params) {
+      Object.keys(params).forEach(function(k) {
+        url += '&' + encodeURIComponent('$' + k) + '=' + encodeURIComponent(JSON.stringify(params[k]));
+      });
+    }
+    return fetch(url).then(function(r) {
+      if (!r.ok) throw new Error('Sanity query failed');
+      return r.json().then(function(d) { return d.result; });
+    });
+  }
+
+  /* ── Portable Text → DOM nodes ── */
+  function blockToDOM(block) {
+    if (!block || block._type !== 'block') return null;
+    var style = block.style || 'normal';
+    var tagMap = { h1:'h1', h2:'h2', h3:'h3', h4:'h4', blockquote:'blockquote' };
+    var tag = tagMap[style] || 'p';
+    var wrapper = document.createElement(tag);
+    (block.children || []).forEach(function(span) {
+      if (!span || span._type !== 'span') return;
+      var node = buildSpanNode(span, block.markDefs || []);
+      if (node) wrapper.appendChild(node);
+    });
+    return wrapper;
+  }
+
+  function buildSpanNode(span, markDefs) {
+    var text   = span.text || '';
+    var marks  = span.marks || [];
+    var node   = document.createTextNode(text);
+    var result = node;
+
+    marks.forEach(function(m) {
+      var wrapper;
+      if      (m === 'strong')    { wrapper = document.createElement('strong'); }
+      else if (m === 'em')        { wrapper = document.createElement('em'); }
+      else if (m === 'underline') { wrapper = document.createElement('u'); }
+      else if (m === 'code')      { wrapper = document.createElement('code'); }
+      else {
+        var def = markDefs.find(function(d) { return d._key === m; });
+        if (def && def._type === 'link') {
+          wrapper = document.createElement('a');
+          wrapper.href   = def.href;
+          wrapper.target = '_blank';
+          wrapper.rel    = 'noopener';
+        }
+      }
+      if (wrapper) { wrapper.appendChild(result); result = wrapper; }
+    });
+
+    return result;
+  }
+
+  function listToDOM(items) {
+    if (!items.length) return null;
+    var tag     = items[0].listItem === 'number' ? 'ol' : 'ul';
+    var wrapper = document.createElement(tag);
+    items.forEach(function(b) {
+      var li = document.createElement('li');
+      (b.children || []).forEach(function(span) {
+        var node = buildSpanNode(span, b.markDefs || []);
+        if (node) li.appendChild(node);
+      });
+      wrapper.appendChild(li);
+    });
+    return wrapper;
+  }
+
+  function renderPortableText(blocks, container) {
+    if (!blocks || !blocks.length) return;
+    var i = 0;
+    while (i < blocks.length) {
+      var b = blocks[i];
+      if (b.listItem) {
+        var list = [];
+        while (i < blocks.length && blocks[i].listItem) { list.push(blocks[i]); i++; }
+        var listNode = listToDOM(list);
+        if (listNode) container.appendChild(listNode);
+      } else {
+        var node = blockToDOM(b);
+        if (node) container.appendChild(node);
+        i++;
+      }
+    }
+  }
+
+  /* ── Format date ── */
+  function formatDate(dateStr) {
+    if (!dateStr) return null;
+    try {
+      var d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('pt-PT', { day: '2-digit', month: 'long', year: 'numeric' });
+    } catch(e) { return dateStr; }
+  }
+
+  /* ── Pill builder ── */
+  function makePill(text, accent) {
+    var span = h('span', 'meta-pill' + (accent ? ' accent' : ''));
+    span.textContent = text;
+    return span;
+  }
+
+  /* ── Info card builder ── */
+  function makeInfoCard(label, value) {
+    var card  = h('div', 'info-card');
+    var lbl   = h('div', 'info-card-label');
+    var val   = h('div', 'info-card-value');
+    lbl.textContent = label;
+    val.textContent = value;
+    card.appendChild(lbl);
+    card.appendChild(val);
+    return card;
+  }
+
+  /* ── Render formação data into DOM ── */
+  function renderPage(f) {
+    document.title = f.titulo + ' — Instituto Português de Criminologia';
+
+    /* Breadcrumb */
+    el.breadcrumb.textContent = f.titulo;
+
+    /* Pills */
+    if (f.badge)                     el.pills.appendChild(makePill(f.badge, true));
+    if (f.preco)                     el.pills.appendChild(makePill('💰 ' + f.preco, false));
+    if (f.dataInicio)                el.pills.appendChild(makePill('📅 ' + formatDate(f.dataInicio), false));
+    if (f.area && f.area.nome)       el.pills.appendChild(makePill((f.area.icone || '') + ' ' + f.area.nome, false));
+    if (!el.pills.firstChild) el.pills.classList.add('hidden');
+
+    /* Title & description */
+    el.title.textContent = f.titulo;
+    if (f.descricao) {
+      el.desc.textContent = f.descricao;
+    } else {
+      el.desc.classList.add('hidden');
+    }
+
+    /* Hero image */
+    el.img.alt = f.titulo;
+    el.img.src = f.imagemUrl
+      ? f.imagemUrl
+      : 'https://placehold.co/260x260/1a1a1a/3aff0a?text=' + encodeURIComponent(f.titulo || '');
+
+    /* Info cards */
+    var hasInfo = false;
+    if (f.badge)             { el.infoGrid.appendChild(makeInfoCard('Edição',        f.badge));                    hasInfo = true; }
+    if (f.preco)             { el.infoGrid.appendChild(makeInfoCard('Investimento',  f.preco));                    hasInfo = true; }
+    if (f.dataInicio)        { el.infoGrid.appendChild(makeInfoCard('Data de Início', formatDate(f.dataInicio)));  hasInfo = true; }
+    if (f.area && f.area.nome) { el.infoGrid.appendChild(makeInfoCard('Área', (f.area.icone || '') + ' ' + f.area.nome)); hasInfo = true; }
+    if (hasInfo) el.sectionInfo.classList.remove('hidden');
+
+    /* Portable text content */
+    if (f.conteudo && f.conteudo.length) {
+      renderPortableText(f.conteudo, el.richText);
+      el.sectionConts.classList.remove('hidden');
+    }
+
+    /* Show page, hide loading */
+    el.loading.classList.add('hidden');
+    el.page.classList.remove('hidden');
+
+    initScrollEffects();
+  }
+
+  /* ── Scroll / reveal effects ── */
+  function initScrollEffects() {
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          var sy  = window.scrollY;
+          var max = document.body.scrollHeight - window.innerHeight;
+          if (el.scrollBar) el.scrollBar.style.width = (sy / max * 100) + '%';
+          if (el.navbar)    el.navbar.classList.toggle('scrolled', sy > 60);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      });
+    }, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.reveal, .stagger').forEach(function(e) { observer.observe(e); });
+  }
+
+  /* ── Mobile menu ── */
+  function closeMobileMenu() {
+    el.mobileMenu.classList.remove('open');
+    el.menuBtn.textContent = '☰';
+    el.menuBtn.setAttribute('aria-expanded', 'false');
+    el.mobileMenu.setAttribute('aria-hidden', 'true');
+  }
+  el.menuBtn.addEventListener('click', function() {
+    var isOpen = el.mobileMenu.classList.toggle('open');
+    el.menuBtn.textContent = isOpen ? '✕' : '☰';
+    el.menuBtn.setAttribute('aria-expanded', String(isOpen));
+    el.mobileMenu.setAttribute('aria-hidden', String(!isOpen));
+  });
+  el.mobileMenu.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', closeMobileMenu); });
+  document.addEventListener('click', function(e) { if (!e.target.closest('nav')) closeMobileMenu(); });
+
+  /* Scroll effect before content loads */
+  window.addEventListener('scroll', function() {
+    if (el.navbar) el.navbar.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  /* ── Main ── */
+  var slug = getSlug();
+  if (!slug) {
+    el.loading.classList.add('hidden');
+    el.notFound.classList.remove('hidden');
+  } else {
+    groq(
+      '*[_type=="formacao" && slug.current==$slug][0]{titulo,badge,preco,descricao,conteudo,area->{nome,icone},"imagemUrl":imagem.asset->url,dataInicio}',
+      { slug: slug }
+    ).then(function(formacao) {
+      if (!formacao) {
+        el.loading.classList.add('hidden');
+        el.notFoundMsg.textContent = 'A formação "' + slug + '" não existe ou foi removida.';
+        el.notFound.classList.remove('hidden');
+        document.title = 'Não encontrado — Instituto Português de Criminologia';
+      } else {
+        renderPage(formacao);
+      }
+    }).catch(function() {
+      el.loading.classList.add('hidden');
+      el.notFoundMsg.textContent = 'Erro ao carregar a formação. Por favor, tente novamente.';
+      el.notFound.classList.remove('hidden');
+    });
+  }
+})();
+</script>
+</body>
+</html>

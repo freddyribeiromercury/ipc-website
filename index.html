@@ -693,6 +693,19 @@
     }
     .form-submit:hover  { filter: brightness(1.1); }
     .form-submit:active { transform: scale(0.97); }
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; filter: none; transform: none; }
+    .form-feedback {
+      display: none; padding: 0.85rem 1.1rem;
+      border-radius: var(--radius); font-size: 0.82rem; font-weight: 400; line-height: 1.5;
+    }
+    .form-feedback.success {
+      display: block; background: hsl(119,99%,46%,0.1);
+      border: 1px solid hsl(119,99%,46%,0.35); color: var(--primary);
+    }
+    .form-feedback.error {
+      display: block; background: hsl(0,80%,50%,0.08);
+      border: 1px solid hsl(0,80%,50%,0.3); color: hsl(0,80%,65%);
+    }
 
     /* ─── FOOTER ─────────────────────────────────────────────── */
     footer {
@@ -1155,26 +1168,33 @@
       </div>
     </div>
     <div class="reveal-right">
-      <form class="contact-form" onsubmit="return false;">
+      <form class="contact-form" id="contactForm">
+        <!-- Web3Forms access key — substitui pelo teu em https://web3forms.com -->
+        <input type="hidden" name="access_key" value="COLOCA_AQUI_A_TUA_ACCESS_KEY" />
+        <input type="hidden" name="subject" value="Novo contacto — IPC Website" />
+        <input type="hidden" name="from_name" value="IPC Website" />
+        <input type="checkbox" name="botcheck" style="display:none;" />
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nome</label>
-            <input type="text" class="form-input" placeholder="O seu nome" />
+            <label class="form-label" for="contact-nome">Nome</label>
+            <input type="text" id="contact-nome" name="name" class="form-input" placeholder="O seu nome" required />
           </div>
           <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" placeholder="email@exemplo.com" />
+            <label class="form-label" for="contact-email">Email</label>
+            <input type="email" id="contact-email" name="email" class="form-input" placeholder="email@exemplo.com" required />
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Assunto</label>
-          <input type="text" class="form-input" placeholder="Formação / Gabinete / Parceria" />
+          <label class="form-label" for="contact-assunto">Assunto</label>
+          <input type="text" id="contact-assunto" name="subject_msg" class="form-input" placeholder="Formação / Gabinete / Parceria" />
         </div>
         <div class="form-group">
-          <label class="form-label">Mensagem</label>
-          <textarea class="form-textarea" placeholder="Descreva a sua necessidade..."></textarea>
+          <label class="form-label" for="contact-mensagem">Mensagem</label>
+          <textarea id="contact-mensagem" name="message" class="form-textarea" placeholder="Descreva a sua necessidade..." required></textarea>
         </div>
-        <button type="submit" class="form-submit">Enviar Mensagem</button>
+        <div class="form-feedback" id="formFeedback"></div>
+        <button type="submit" class="form-submit" id="formSubmit">Enviar Mensagem</button>
       </form>
     </div>
   </div>
@@ -1193,6 +1213,53 @@
 </footer>
 
 <script>
+  /* ─── CONTACT FORM — Web3Forms ─────────────────── */
+  (function () {
+    var form     = document.getElementById('contactForm');
+    var btn      = document.getElementById('formSubmit');
+    var feedback = document.getElementById('formFeedback');
+
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      btn.disabled    = true;
+      btn.textContent = 'A enviar…';
+      feedback.className = 'form-feedback';
+
+      var data = new FormData(form);
+
+      /* Merge assunto personalizado no subject final */
+      var subjectMsg = data.get('subject_msg');
+      if (subjectMsg) data.set('subject', 'IPC Website — ' + subjectMsg);
+      data.delete('subject_msg');
+
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (json) {
+        if (json.success) {
+          feedback.textContent = '✓ Mensagem enviada com sucesso! Responderemos em 48 horas úteis.';
+          feedback.className   = 'form-feedback success';
+          form.reset();
+        } else {
+          throw new Error(json.message || 'Erro desconhecido');
+        }
+      })
+      .catch(function () {
+        feedback.textContent = '✕ Não foi possível enviar. Tente novamente ou contacte-nos por email.';
+        feedback.className   = 'form-feedback error';
+      })
+      .finally(function () {
+        btn.disabled    = false;
+        btn.textContent = 'Enviar Mensagem';
+      });
+    });
+  })();
+
   /* ─── HERO CANVAS ANIMATION ────────────────────── */
   (function () {
     const canvas = document.getElementById('heroCanvas');
@@ -1447,7 +1514,7 @@
     }
 
     function makeCursoCard(c) {
-      var a    = h('a', {'class': 'curso-card', 'href': (c.slug || '') + '.html'});
+      var a    = h('a', {'class': 'curso-card', 'href': 'formacao.html?slug=' + encodeURIComponent(c.slug || '')});
       var wrap = h('div', {'class': 'curso-img-wrap'});
       var imgSrc = c.imagemUrl
         ? c.imagemUrl

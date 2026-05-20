@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidade - Instituto Português de Criminologia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    :root {
+      --bg: hsl(0,0%,10%);
+      --hero-bg: hsl(0,0%,8%);
+      --fg: hsl(0,0%,96%);
+      --primary: hsl(119,99%,46%);
+      --primary-dim: hsl(119,99%,38%);
+      --primary-fg: hsl(0,0%,4%);
+      --secondary: hsl(0,0%,18%);
+      --muted: hsl(0,0%,16%);
+      --muted-fg: hsl(0,0%,60%);
+      --border: hsl(0,0%,20%);
+      --nav-btn: hsl(0,0%,18%);
+      --radius: 0.5rem;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; }
+    body { font-family: "Sora", sans-serif; background: var(--bg); color: var(--fg); -webkit-font-smoothing: antialiased; overflow-x: hidden; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    @keyframes fade-up { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s cubic-bezier(0.16,1,0.3,1), transform 0.65s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 4rem; transition: background 0.3s ease, border-color 0.3s ease; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: hsla(0,0%,8%,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom-color: var(--border); }
+    .nav-logo { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--primary); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--fg); }
+    .nav-cta { background: var(--nav-btn); color: var(--fg); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.6rem 1.5rem; border-radius: var(--radius); border: none; cursor: pointer; transition: background 0.2s, transform 0.15s; display: inline-block; }
+    .nav-cta:hover { background: hsl(0,0%,24%); }
+    .nav-cta:active { transform: scale(0.97); }
+    .menu-btn { display: none; background: var(--nav-btn); border: none; cursor: pointer; padding: 0.5rem 0.6rem; border-radius: var(--radius); color: var(--fg); font-size: 1.1rem; line-height: 1; transition: background 0.2s; }
+    @media (max-width: 768px) { nav { padding: 1rem 1.5rem; } .nav-links, .nav-cta { display: none; } .menu-btn { display: block; } }
+    .mobile-menu { position: absolute; top: 100%; left: 0; right: 0; background: hsla(0,0%,7%,0.98); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+    .mobile-menu.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .mobile-nav-links { list-style: none; }
+    .mobile-nav-links a { display: block; padding: 1rem 1.5rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted-fg); border-bottom: 1px solid var(--border); transition: color 0.2s, background 0.2s; }
+    .mobile-nav-links a:hover { color: var(--fg); background: hsl(0,0%,12%); }
+    .mobile-cta-wrap { padding: 1.25rem 1.5rem; }
+    .mobile-cta-btn { display: block; width: 100%; background: var(--primary); color: var(--primary-fg); font-family: "Sora",sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.85rem; border-radius: 2px; border: none; cursor: pointer; text-decoration: none; text-align: center; }
+    @media (min-width: 769px) { .mobile-menu { display: none !important; } }
+
+    .scroll-progress { position: fixed; top: 0; left: 0; z-index: 100; height: 2px; background: var(--primary); width: 0%; pointer-events: none; transition: width 0.1s linear; }
+
+    /* PAGE HERO */
+    .page-hero { position: relative; min-height: 52vh; display: flex; align-items: center; background: var(--hero-bg); overflow: hidden; padding-top: 80px; border-bottom: 1px solid var(--border); }
+    .page-hero-bg { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(ellipse 60% 60% at 78% 50%, hsl(119,99%,46%,0.06) 0%, transparent 70%), linear-gradient(hsl(0,0%,22%,0.10) 1px, transparent 1px), linear-gradient(90deg, hsl(0,0%,22%,0.10) 1px, transparent 1px); background-size: auto, 48px 48px, 48px 48px; }
+    .page-hero-inner { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; width: 100%; padding: 4rem; }
+    @media (max-width: 768px) { .page-hero-inner { padding: 2.5rem 1.5rem 3.5rem; } }
+    .breadcrumb { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-fg); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.75rem; flex-wrap: wrap; opacity: 0; animation: fade-in 0.5s ease 0.05s forwards; }
+    .breadcrumb a:hover { color: var(--primary); }
+    .breadcrumb-sep { color: hsl(0,0%,35%); }
+    .breadcrumb-current { color: var(--fg); }
+    .page-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s forwards; }
+    .page-h1 { font-size: clamp(2.4rem,5vw,4rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.04em; color: var(--fg); margin-bottom: 0.75rem; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s forwards; }
+    .page-h1 span { color: var(--primary); }
+    .page-meta { font-size: 0.72rem; font-weight: 300; color: var(--muted-fg); letter-spacing: 0.04em; opacity: 0; animation: fade-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.35s forwards; margin-top: 1.25rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .page-meta-item { display: flex; align-items: center; gap: 0.4rem; }
+    .page-meta-item::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); display: block; flex-shrink: 0; }
+
+    /* TABLE OF CONTENTS */
+    .toc-section { background: var(--hero-bg); border-bottom: 1px solid var(--border); padding: 2rem 4rem; }
+    @media (max-width: 768px) { .toc-section { padding: 2rem 1.5rem; } }
+    .toc-inner { max-width: 860px; margin: 0 auto; }
+    .toc-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--primary); margin-bottom: 1rem; }
+    .toc-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .toc-item { font-size: 0.7rem; font-weight: 400; color: var(--muted-fg); background: var(--muted); border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 100px; transition: color 0.2s, border-color 0.2s, background 0.2s; white-space: nowrap; }
+    .toc-item:hover { color: var(--primary); border-color: hsl(119,99%,46%,0.4); background: hsl(119,99%,46%,0.05); }
+
+    /* CONTENT */
+    .policy-section { padding: 4rem 4rem; border-top: 1px solid var(--border); }
+    @media (max-width: 768px) { .policy-section { padding: 3rem 1.5rem; } }
+    .policy-section.alt { background: var(--hero-bg); }
+    .policy-inner { max-width: 860px; margin: 0 auto; }
+
+    .policy-section-id { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); opacity: 0.7; margin-bottom: 0.5rem; }
+    .policy-h2 { font-size: clamp(1.35rem,2.5vw,1.8rem); font-weight: 700; letter-spacing: -0.03em; color: var(--fg); margin-bottom: 1.5rem; line-height: 1.2; }
+    .policy-h2 span { color: var(--primary); }
+    .policy-body { font-size: clamp(0.85rem,1.3vw,0.95rem); font-weight: 300; color: var(--muted-fg); line-height: 1.8; }
+    .policy-body + .policy-body { margin-top: 1rem; }
+    .policy-body strong { color: var(--fg); font-weight: 500; }
+    .policy-divider { width: 32px; height: 2px; background: var(--primary); margin: 1rem 0 1.75rem; }
+
+    .policy-list { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .policy-list-item { display: flex; gap: 0.85rem; align-items: flex-start; padding: 0.9rem 1.1rem; background: var(--muted); border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 0.25s; }
+    .policy-list-item:hover { border-color: hsl(119,99%,46%,0.3); }
+    .policy-list-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary); flex-shrink: 0; margin-top: 0.45rem; }
+    .policy-list-text { font-size: 0.84rem; font-weight: 300; color: var(--fg); line-height: 1.65; }
+    .policy-list-text strong { font-weight: 600; color: var(--fg); }
+
+    .rights-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin-top: 1.75rem; }
+    @media (max-width: 640px) { .rights-grid { grid-template-columns: 1fr; } }
+    .right-card { background: var(--secondary); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; position: relative; overflow: hidden; transition: border-color 0.25s, transform 0.25s; }
+    .right-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--primary); transform: scaleX(0); transform-origin: left; transition: transform 0.35s cubic-bezier(0.16,1,0.3,1); }
+    .right-card:hover { border-color: hsl(119,99%,46%,0.4); transform: translateY(-3px); }
+    .right-card:hover::before { transform: scaleX(1); }
+    .right-icon { font-size: 1.4rem; margin-bottom: 0.85rem; display: block; }
+    .right-title { font-size: 0.88rem; font-weight: 600; color: var(--fg); letter-spacing: -0.01em; margin-bottom: 0.5rem; }
+    .right-desc { font-size: 0.78rem; font-weight: 300; color: var(--muted-fg); line-height: 1.6; }
+
+    .highlight-box { background: linear-gradient(135deg, hsl(119,99%,46%,0.08) 0%, transparent 60%); border: 1px solid hsl(119,99%,46%,0.2); border-radius: var(--radius); padding: 1.75rem; margin-top: 1.75rem; }
+    .highlight-box-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.6rem; }
+    .highlight-box-body { font-size: 0.88rem; font-weight: 300; color: var(--muted-fg); line-height: 1.7; }
+    .highlight-box-body strong { color: var(--fg); font-weight: 500; }
+
+    .contact-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.75rem; }
+    .contact-chip { display: flex; align-items: center; gap: 0.6rem; background: var(--secondary); border: 1px solid var(--border); border-radius: 100px; padding: 0.65rem 1.25rem; font-size: 0.78rem; font-weight: 400; color: var(--muted-fg); transition: color 0.2s, border-color 0.2s; }
+    .contact-chip:hover { color: var(--primary); border-color: hsl(119,99%,46%,0.4); }
+    .contact-chip-icon { font-size: 0.9rem; }
+
+    /* FOOTER */
+    footer { background: var(--hero-bg); border-top: 1px solid var(--border); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    @media (max-width: 768px) { footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 1.25rem; } }
+    .footer-logo { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.02em; }
+    .footer-logo span { color: var(--primary); }
+    .footer-copy { font-size: 0.7rem; font-weight: 300; color: var(--muted-fg); }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.7rem; font-weight: 400; color: var(--muted-fg); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">IPC <span>·</span> Instituto Português de Criminologia</a>
+  <ul class="nav-links">
+    <li><a href="index.html#formacoes">Formações</a></li>
+    <li><a href="index.html#gabinete">Gabinete</a></li>
+    <li><a href="index.html#equipa">Equipa</a></li>
+    <li><a href="index.html#parcerias">Parcerias</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+  </ul>
+  <a href="index.html#contacto" class="nav-cta">Contactar</a>
+  <button class="menu-btn" id="menuBtn" aria-label="Menu" aria-expanded="false">☰</button>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul class="mobile-nav-links">
+      <li><a href="index.html#formacoes">Formações</a></li>
+      <li><a href="index.html#gabinete">Gabinete</a></li>
+      <li><a href="index.html#equipa">Equipa</a></li>
+      <li><a href="index.html#parcerias">Parcerias</a></li>
+      <li><a href="index.html#contacto">Contacto</a></li>
+    </ul>
+    <div class="mobile-cta-wrap">
+      <a class="mobile-cta-btn" href="index.html#contacto">Contactar</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Início</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Política de Privacidade</span>
+    </div>
+    <p class="page-label">Informação Legal · RGPD</p>
+    <h1 class="page-h1">Política de<br><span>Privacidade</span></h1>
+    <div class="page-meta">
+      <span class="page-meta-item">Última atualização: 20 de maio de 2026</span>
+      <span class="page-meta-item">Conforme RGPD (UE) 2016/679</span>
+      <span class="page-meta-item">Lei n.º 58/2019</span>
+    </div>
+  </div>
+</section>
+
+<!-- ÍNDICE -->
+<div class="toc-section">
+  <div class="toc-inner">
+    <p class="toc-label">Índice</p>
+    <nav class="toc-grid" aria-label="Índice da política de privacidade">
+      <a href="#responsavel" class="toc-item">1. Responsável pelo Tratamento</a>
+      <a href="#dados" class="toc-item">2. Dados Recolhidos</a>
+      <a href="#finalidade" class="toc-item">3. Finalidade do Tratamento</a>
+      <a href="#base-legal" class="toc-item">4. Base Legal</a>
+      <a href="#conservacao" class="toc-item">5. Conservação dos Dados</a>
+      <a href="#direitos" class="toc-item">6. Direitos do Titular</a>
+      <a href="#partilha" class="toc-item">7. Partilha com Terceiros</a>
+      <a href="#transferencias" class="toc-item">8. Transferências Internacionais</a>
+      <a href="#cookies" class="toc-item">9. Cookies</a>
+      <a href="#seguranca" class="toc-item">10. Segurança</a>
+      <a href="#alteracoes" class="toc-item">11. Alterações à Política</a>
+      <a href="#contactos" class="toc-item">12. Contactos</a>
+    </nav>
+  </div>
+</div>
+
+<!-- 1. RESPONSÁVEL -->
+<section class="policy-section" id="responsavel">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">01</p>
+    <h2 class="policy-h2 reveal">Responsável pelo<br><span>Tratamento de Dados</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O responsável pelo tratamento dos dados pessoais recolhidos através deste website é o <strong>Instituto Português de Criminologia (IPC)</strong>, pessoa coletiva com sede em Portugal.</p>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Identificação</p>
+      <p class="highlight-box-body">
+        <strong>Instituto Português de Criminologia</strong><br>
+        NIF: a confirmar com o responsável<br>
+        Sede: Portugal<br>
+        Website: ipcriminologia.pt
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. DADOS RECOLHIDOS -->
+<section class="policy-section alt" id="dados">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">02</p>
+    <h2 class="policy-h2 reveal">Dados <span>Recolhidos</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O IPC recolhe dados pessoais de forma direta, quando o titular os fornece voluntariamente, e de forma indireta, através do acesso ao website. Os dados tratados podem incluir:</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de identificação</strong> — nome completo, número de identificação civil ou profissional</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de contacto</strong> — endereço de e-mail, número de telefone, morada</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados profissionais</strong> — área de atividade, entidade empregadora, habilitações académicas (para inscrição em formações)</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de navegação</strong> — endereço IP, tipo de browser, sistema operativo, páginas visitadas e duração da sessão</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de comunicação</strong> — mensagens enviadas através do formulário de contacto ou por e-mail</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. FINALIDADE -->
+<section class="policy-section" id="finalidade">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">03</p>
+    <h2 class="policy-h2 reveal">Finalidade do <span>Tratamento</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">Os dados pessoais recolhidos são tratados para as seguintes finalidades:</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Gestão de inscrições</strong> em formações, cursos e eventos organizados pelo IPC</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Prestação de serviços</strong> do Gabinete de Criminologia, incluindo peritagens e consultoria forense</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Resposta a pedidos de informação</strong> e gestão de contactos efetuados através dos canais disponíveis</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Envio de comunicações institucionais</strong> e newsletters, mediante consentimento prévio e expresso</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Gestão administrativa e financeira</strong>, incluindo faturação e cumprimento de obrigações legais e fiscais</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Melhoria do website</strong> e análise estatística de utilização, de forma agregada e anonimizada</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. BASE LEGAL -->
+<section class="policy-section alt" id="base-legal">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">04</p>
+    <h2 class="policy-h2 reveal">Base <span>Legal</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O tratamento dos dados pessoais assenta nas seguintes bases jurídicas previstas no artigo 6.º do RGPD:</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Consentimento [art. 6.º, n.º 1, al. a)]</strong> — para envio de comunicações de marketing, newsletters e utilização de cookies não essenciais</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Execução de contrato [art. 6.º, n.º 1, al. b)]</strong> — para cumprimento de prestações de serviços e inscrições em formações</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Obrigação legal [art. 6.º, n.º 1, al. c)]</strong> — para cumprimento de obrigações fiscais, contabilísticas e regulatórias</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Interesse legítimo [art. 6.º, n.º 1, al. f)]</strong> — para segurança do website, prevenção de fraude e melhoria dos serviços</div>
+      </div>
+    </div>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Revogação do consentimento</p>
+      <p class="highlight-box-body">Quando o tratamento se basear em consentimento, o titular pode revogá-lo a qualquer momento, sem que tal comprometa a licitude do tratamento efetuado com base no consentimento anteriormente prestado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. CONSERVAÇÃO -->
+<section class="policy-section" id="conservacao">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">05</p>
+    <h2 class="policy-h2 reveal">Conservação dos <span>Dados</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">Os dados pessoais são conservados pelo período estritamente necessário à prossecução das finalidades que justificaram a sua recolha, observando os seguintes critérios:</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de formandos</strong> — conservados durante a vigência da relação e por um período de <strong>5 anos</strong> após o término, para fins de certificação e obrigações legais</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de faturação</strong> — conservados por <strong>10 anos</strong>, em cumprimento das obrigações fiscais e contabilísticas previstas na lei portuguesa</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de contacto e comunicações</strong> — conservados por <strong>2 anos</strong> após o último contacto, salvo existência de relação contratual em curso</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados para newsletters</strong> — conservados enquanto o consentimento se mantiver válido; eliminados após revogação</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Dados de navegação</strong> — conservados de forma anonimizada para fins estatísticos; logs de acesso conservados por <strong>12 meses</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. DIREITOS DO TITULAR -->
+<section class="policy-section alt" id="direitos">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">06</p>
+    <h2 class="policy-h2 reveal">Direitos do <span>Titular dos Dados</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">Nos termos do RGPD e da Lei n.º 58/2019, o titular dos dados tem os seguintes direitos, que pode exercer a qualquer momento:</p>
+    <div class="rights-grid reveal">
+      <div class="right-card">
+        <span class="right-icon">👁</span>
+        <h3 class="right-title">Direito de Acesso</h3>
+        <p class="right-desc">Obter confirmação sobre se os seus dados são tratados e aceder a uma cópia dos mesmos, bem como às informações sobre o tratamento.</p>
+      </div>
+      <div class="right-card">
+        <span class="right-icon">✏️</span>
+        <h3 class="right-title">Direito de Retificação</h3>
+        <p class="right-desc">Solicitar a correção de dados inexatos ou incompletos que lhe digam respeito, sem demora injustificada.</p>
+      </div>
+      <div class="right-card">
+        <span class="right-icon">🗑</span>
+        <h3 class="right-title">Direito ao Apagamento</h3>
+        <p class="right-desc">Solicitar a eliminação dos seus dados pessoais quando estes já não sejam necessários ou quando retirar o consentimento.</p>
+      </div>
+      <div class="right-card">
+        <span class="right-icon">⏸</span>
+        <h3 class="right-title">Direito de Limitação</h3>
+        <p class="right-desc">Requerer a suspensão do tratamento nos casos previstos no RGPD, nomeadamente enquanto uma contestação estiver em análise.</p>
+      </div>
+      <div class="right-card">
+        <span class="right-icon">📦</span>
+        <h3 class="right-title">Direito de Portabilidade</h3>
+        <p class="right-desc">Receber os seus dados num formato estruturado, de uso corrente e leitura automática, e transmiti-los a outro responsável.</p>
+      </div>
+      <div class="right-card">
+        <span class="right-icon">🚫</span>
+        <h3 class="right-title">Direito de Oposição</h3>
+        <p class="right-desc">Opor-se ao tratamento dos seus dados com base em interesse legítimo ou para fins de marketing direto.</p>
+      </div>
+    </div>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Como exercer os seus direitos</p>
+      <p class="highlight-box-body">O titular pode exercer os seus direitos através dos contactos indicados no ponto 12 desta política. Responderemos no prazo máximo de <strong>30 dias</strong> a contar da receção do pedido, podendo este prazo ser prorrogado por mais 60 dias em casos de especial complexidade. Poderá igualmente apresentar reclamação à autoridade de controlo competente: <strong>Comissão Nacional de Proteção de Dados (CNPD)</strong>, www.cnpd.pt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PARTILHA COM TERCEIROS -->
+<section class="policy-section" id="partilha">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">07</p>
+    <h2 class="policy-h2 reveal">Partilha com <span>Terceiros</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O IPC não vende, aluga nem cede dados pessoais a terceiros para fins comerciais. Os dados podem ser partilhados apenas nas seguintes situações:</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Subcontratantes e prestadores de serviços</strong> — entidades que processam dados em nome do IPC (ex.: plataformas de pagamento, serviços de e-mail, alojamento web), vinculadas por contrato nos termos do art. 28.º do RGPD</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Obrigações legais</strong> — entidades públicas ou autoridades, quando exigido por lei, decisão judicial ou autoridade administrativa competente</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Parceiros institucionais</strong> — apenas em caso de formações ou eventos conjuntos, mediante informação prévia e, quando necessário, consentimento do titular</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. TRANSFERÊNCIAS INTERNACIONAIS -->
+<section class="policy-section alt" id="transferencias">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">08</p>
+    <h2 class="policy-h2 reveal">Transferências <span>Internacionais</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">Os dados pessoais são tratados, em regra, em território da União Europeia e do Espaço Económico Europeu. Caso se verifique qualquer transferência para países terceiros, o IPC assegura que essa transferência é efetuada com as garantias adequadas previstas nos artigos 45.º a 49.º do RGPD, nomeadamente através de cláusulas contratuais-tipo aprovadas pela Comissão Europeia ou de uma decisão de adequação.</p>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Serviços de terceiros</p>
+      <p class="highlight-box-body">Alguns fornecedores de tecnologia (ex.: serviços de análise, plataformas de comunicação) poderão ter servidores fora da UE. Estes fornecedores foram selecionados por garantirem conformidade com o RGPD através de mecanismos reconhecidos de transferência internacional de dados.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. COOKIES -->
+<section class="policy-section" id="cookies">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">09</p>
+    <h2 class="policy-h2 reveal">Política de <span>Cookies</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O website do IPC utiliza cookies e tecnologias similares para garantir o seu correto funcionamento e melhorar a experiência de navegação. Um cookie é um pequeno ficheiro de texto armazenado no seu dispositivo.</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Cookies essenciais</strong> — necessários para o funcionamento básico do website. Não requerem consentimento e não podem ser desativados</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Cookies de desempenho</strong> — recolhem informação sobre a utilização do website de forma anónima e agregada, para fins de análise estatística e melhoria contínua</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Cookies de funcionalidade</strong> — memorizam as suas preferências de navegação (ex.: idioma, região) para proporcionar uma experiência personalizada</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Cookies de terceiros</strong> — utilizados por serviços externos integrados no website (ex.: mapas, conteúdos de redes sociais), sujeitos às respetivas políticas de privacidade</div>
+      </div>
+    </div>
+    <p class="policy-body reveal" style="margin-top:1.25rem;">Pode gerir as suas preferências de cookies a qualquer momento através das definições do seu browser ou da ferramenta de gestão de consentimento disponível no website. A desativação de cookies não essenciais não afeta o acesso aos conteúdos principais do website.</p>
+  </div>
+</section>
+
+<!-- 10. SEGURANÇA -->
+<section class="policy-section alt" id="seguranca">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">10</p>
+    <h2 class="policy-h2 reveal">Medidas de <span>Segurança</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O IPC adota medidas técnicas e organizativas adequadas para proteger os dados pessoais contra o acesso não autorizado, a divulgação indevida, a alteração, a destruição ou a perda acidental, em conformidade com o artigo 32.º do RGPD.</p>
+    <div class="policy-list reveal">
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Transmissão cifrada</strong> — comunicações protegidas por protocolo HTTPS/TLS</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Controlo de acessos</strong> — acesso aos dados restrito a colaboradores com necessidade profissional justificada</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Formação interna</strong> — sensibilização e formação regular dos colaboradores em matéria de proteção de dados</div>
+      </div>
+      <div class="policy-list-item">
+        <div class="policy-list-dot"></div>
+        <div class="policy-list-text"><strong>Avaliação de fornecedores</strong> — verificação de conformidade com o RGPD dos subcontratantes antes da contratação</div>
+      </div>
+    </div>
+    <p class="policy-body reveal" style="margin-top:1.25rem;">Em caso de violação de dados pessoais com risco para os direitos e liberdades dos titulares, o IPC notificará a CNPD no prazo de 72 horas e, quando necessário, comunicará diretamente aos titulares afetados.</p>
+  </div>
+</section>
+
+<!-- 11. ALTERAÇÕES -->
+<section class="policy-section" id="alteracoes">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">11</p>
+    <h2 class="policy-h2 reveal">Alterações à <span>Política</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">O IPC reserva-se o direito de atualizar a presente Política de Privacidade sempre que necessário, nomeadamente em virtude de alterações legislativas ou regulatórias, de mudanças nos processos internos de tratamento de dados ou de recomendações emitidas pela CNPD.</p>
+    <p class="policy-body reveal">Quaisquer alterações substanciais serão comunicadas de forma clara e visível no website, com indicação da data de entrada em vigor. Recomendamos que consulte periodicamente esta página. A data de última atualização é sempre indicada no topo do documento.</p>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Versão atual</p>
+      <p class="highlight-box-body">Esta política foi atualizada em <strong>20 de maio de 2026</strong> e substitui todas as versões anteriores. A continuação da utilização do website após a publicação de alterações implica a sua aceitação.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12. CONTACTOS -->
+<section class="policy-section alt" id="contactos">
+  <div class="policy-inner">
+    <p class="policy-section-id reveal">12</p>
+    <h2 class="policy-h2 reveal">Contactos e <span>Encarregado de Proteção</span></h2>
+    <div class="policy-divider reveal"></div>
+    <p class="policy-body reveal">Para qualquer questão relacionada com o tratamento dos seus dados pessoais, para exercer os seus direitos ou para apresentar uma reclamação, pode contactar o IPC através dos seguintes meios:</p>
+    <div class="contact-bar reveal">
+      <a href="mailto:privacidade@ipcriminologia.pt" class="contact-chip">
+        <span class="contact-chip-icon">✉</span>
+        privacidade@ipcriminologia.pt
+      </a>
+      <a href="index.html#contacto" class="contact-chip">
+        <span class="contact-chip-icon">📋</span>
+        Formulário de Contacto
+      </a>
+    </div>
+    <p class="policy-body reveal" style="margin-top:1.75rem;">Caso a resposta do IPC não seja satisfatória, tem o direito de apresentar reclamação à autoridade de controlo competente:</p>
+    <div class="highlight-box reveal">
+      <p class="highlight-box-label">Autoridade de Controlo</p>
+      <p class="highlight-box-body">
+        <strong>Comissão Nacional de Proteção de Dados (CNPD)</strong><br>
+        Rua de São Bento, 148–3.º, 1200-821 Lisboa<br>
+        Telefone: +351 213 928 400<br>
+        Website: <strong>www.cnpd.pt</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">IPC <span>·</span> Instituto Português de Criminologia</div>
+  <p class="footer-copy">© 2026 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="index.html">Início</a></li>
+    <li><a href="index.html#gabinete">Gabinete</a></li>
+    <li><a href="index.html#contacto">Contacto</a></li>
+    <li><a href="privacidade.html" style="color: var(--fg);">Privacidade</a></li>
+    <li><a href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Facebook</a></li>
+    <li><a href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
+</footer>
+
+<script>
+  const prog = document.getElementById('scrollProgress');
+  const navbar = document.getElementById('navbar');
+  let ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const sy = window.scrollY;
+        const max = document.body.scrollHeight - window.innerHeight;
+        prog.style.width = (sy / max * 100) + '%';
+        navbar.classList.toggle('scrolled', sy > 20);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+    mobileMenu.setAttribute('aria-hidden', !open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', false);
+      mobileMenu.setAttribute('aria-hidden', true);
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
