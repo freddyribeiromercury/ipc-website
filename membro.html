@@ -244,6 +244,18 @@
 </footer>
 
 <script>
+/* ── SANITY CONFIG ─────────────────────────────────────── */
+var SANITY_PROJECT = 'dlel582r';
+var SANITY_DATASET = 'production';
+var SANITY_API     = 'https://' + SANITY_PROJECT + '.api.sanity.io/v2024-01-01/data/query/' + SANITY_DATASET;
+
+function groq(query) {
+  return fetch(SANITY_API + '?query=' + encodeURIComponent(query))
+    .then(function(r) { return r.json(); })
+    .then(function(d) { return d.result; });
+}
+
+/* ── LEGACY FALLBACK (used only if Sanity fails) ──────── */
 const TEAM = [
   {
     id: "miguel-silva",
@@ -419,34 +431,25 @@ const TEAM = [
 ];
 
 function el(tag, cls) {
-  const e = document.createElement(tag);
+  var e = document.createElement(tag);
   if (cls) e.className = cls;
   return e;
 }
 
-function render() {
-  const params = new URLSearchParams(window.location.search);
-  const id     = params.get('id');
-  const person = TEAM.find(function(p) { return p.id === id; });
-
-  if (!person) {
-    document.title = 'Perfil não encontrado — IPC';
-    document.getElementById('heroName').textContent = 'Perfil não encontrado';
-    document.getElementById('heroIntro').textContent = 'O perfil solicitado não existe.';
-    return;
-  }
+function renderPerson(person, allMembers) {
+  var id = person.slug || person.id;
 
   document.title = person.name + ' — Instituto Português de Criminologia';
 
   /* hero photo */
-  const frame = document.getElementById('heroPhotoFrame');
+  var frame = document.getElementById('heroPhotoFrame');
   if (person.photo) {
-    const img = document.createElement('img');
+    var img = document.createElement('img');
     img.src = person.photo;
     img.alt = person.name;
     frame.appendChild(img);
   } else {
-    const div = el('div', 'profile-initials');
+    var div = el('div', 'profile-initials');
     div.textContent = person.initials || '';
     frame.appendChild(div);
   }
@@ -455,28 +458,28 @@ function render() {
   document.getElementById('heroLabel').textContent = 'Equipa IPC';
   document.getElementById('heroName').textContent  = person.name;
   document.getElementById('heroRole').textContent  = person.role;
-  document.getElementById('heroIntro').textContent = person.intro;
+  document.getElementById('heroIntro').textContent = person.intro || '';
 
   /* bio paragraphs */
-  const bioEl = document.getElementById('bioText');
-  person.bio.forEach(function(text) {
-    const p = el('p', 'bio-paragraph');
+  var bioEl = document.getElementById('bioText');
+  (person.bio || []).forEach(function(text) {
+    var p = el('p', 'bio-paragraph');
     p.textContent = text;
     bioEl.appendChild(p);
   });
 
-  /* sidebar */
-  const sidebarEl = document.getElementById('sidebar');
-  person.credentials.forEach(function(group) {
-    const card       = el('div', 'sidebar-card');
-    const lbl        = el('div', 'sidebar-card-label');
-    lbl.textContent  = group.label;
+  /* sidebar credentials */
+  var sidebarEl = document.getElementById('sidebar');
+  (person.credentials || []).forEach(function(group) {
+    var card = el('div', 'sidebar-card');
+    var lbl  = el('div', 'sidebar-card-label');
+    lbl.textContent = group.label;
     card.appendChild(lbl);
-    group.items.forEach(function(item) {
-      const row  = el('div', 'credential-item');
-      const dash = el('span', 'credential-dash');
+    (group.items || []).forEach(function(item) {
+      var row  = el('div', 'credential-item');
+      var dash = el('span', 'credential-dash');
       dash.textContent = '—';
-      const txt = el('span');
+      var txt = el('span');
       txt.textContent = item;
       row.appendChild(dash);
       row.appendChild(txt);
@@ -485,26 +488,87 @@ function render() {
     sidebarEl.appendChild(card);
   });
 
-  /* prev / next */
-  const idx   = TEAM.findIndex(function(p) { return p.id === id; });
-  const prev  = TEAM[idx - 1];
-  const next  = TEAM[idx + 1];
-  const navEl = document.getElementById('teamNav');
+  /* prev / next navigation */
+  var all   = allMembers || [];
+  var idx   = all.findIndex(function(p) { return (p.slug || p.id) === id; });
+  var prev  = all[idx - 1];
+  var next  = all[idx + 1];
+  var navEl = document.getElementById('teamNav');
   if (prev) {
-    const a = el('a', 'back-btn');
-    a.href = 'membro.html?id=' + prev.id;
+    var a = el('a', 'back-btn');
+    a.href = 'membro.html?id=' + (prev.slug || prev.id);
     a.textContent = '← ' + prev.name;
     navEl.appendChild(a);
   }
   if (next) {
-    const a = el('a', 'back-btn');
-    a.href = 'membro.html?id=' + next.id;
-    a.textContent = next.name + ' →';
-    navEl.appendChild(a);
+    var b = el('a', 'back-btn');
+    b.href = 'membro.html?id=' + (next.slug || next.id);
+    b.textContent = next.name + ' →';
+    navEl.appendChild(b);
   }
 }
 
-render();
+/* ── MAIN: try Sanity first, fall back to local TEAM array ── */
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var id     = params.get('id') || '';
+
+  var memberQuery = '*[_type=="membroEquipa"&&slug.current==' + JSON.stringify(id) + '][0]{'
+    + 'nome,cargo,"slug":slug.current,fotoUrl,iniciais,intro,'
+    + '"bio":bioLonga[]{...,children[]{...}},'
+    + '"credentials":credenciais[]{label,items}'
+    + '}';
+
+  var allQuery = '*[_type=="membroEquipa"]|order(ordem asc){"slug":slug.current,nome}';
+
+  Promise.all([groq(memberQuery), groq(allQuery)]).then(function(results) {
+    var data    = results[0];
+    var allMems = results[1] || [];
+
+    if (data && data.nome) {
+      /* Map Sanity Portable Text blocks to plain text paragraphs */
+      var bioParagraphs = (data.bio || []).map(function(block) {
+        return (block.children || []).map(function(span) { return span.text || ''; }).join('');
+      }).filter(Boolean);
+
+      renderPerson({
+        slug:        data.slug,
+        name:        data.nome,
+        role:        data.cargo,
+        photo:       data.fotoUrl || null,
+        initials:    data.iniciais || '',
+        intro:       data.intro || '',
+        bio:         bioParagraphs,
+        credentials: data.credentials || []
+      }, allMems.map(function(m) { return {slug: m.slug, name: m.nome}; }));
+    } else {
+      /* Fallback to hardcoded TEAM data */
+      var person = TEAM.find(function(p) { return p.id === id; });
+      if (!person) {
+        document.title = 'Perfil não encontrado — IPC';
+        document.getElementById('heroName').textContent  = 'Perfil não encontrado';
+        document.getElementById('heroIntro').textContent = 'O perfil solicitado não existe.';
+        return;
+      }
+      renderPerson({
+        slug: person.id, name: person.name, role: person.role,
+        photo: person.photo, initials: person.initials || '',
+        intro: person.intro, bio: person.bio,
+        credentials: person.credentials
+      }, TEAM.map(function(p) { return {slug: p.id, name: p.name}; }));
+    }
+  }).catch(function() {
+    /* Network error — use hardcoded fallback */
+    var person = TEAM.find(function(p) { return p.id === id; });
+    if (!person) return;
+    renderPerson({
+      slug: person.id, name: person.name, role: person.role,
+      photo: person.photo, initials: person.initials || '',
+      intro: person.intro, bio: person.bio,
+      credentials: person.credentials
+    }, TEAM.map(function(p) { return {slug: p.id, name: p.name}; }));
+  });
+})();
 </script>
 </body>
 </html>

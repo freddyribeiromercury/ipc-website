@@ -465,19 +465,30 @@
     #cursos { background: var(--hero-bg); }
     .cursos-inner { max-width: 1200px; margin: 0 auto; }
     .cursos-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-      gap: 1.5rem; margin-top: 3rem;
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 2rem; margin-top: 3rem;
     }
+    @media (max-width: 700px) { .cursos-grid { grid-template-columns: 1fr; } }
     .curso-card {
       background: var(--secondary); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.75rem;
+      border-radius: var(--radius); overflow: hidden;
       display: flex; flex-direction: column;
       transition: border-color 0.25s, transform 0.25s;
+      text-decoration: none; color: inherit;
     }
     .curso-card:hover {
       border-color: hsl(119,99%,46%,0.4);
       transform: translateY(-4px);
     }
+    .curso-img {
+      width: 100%; height: 220px; object-fit: cover; display: block;
+      filter: grayscale(20%) contrast(1.05);
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), filter 0.3s;
+    }
+    .curso-card:hover .curso-img { transform: scale(1.03); filter: grayscale(0%) contrast(1.1); }
+    .curso-img-wrap { overflow: hidden; position: relative; }
+    .curso-img-wrap::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, hsl(0,0%,18%,0.7) 100%); pointer-events: none; }
+    .curso-body { padding: 1.75rem; display: flex; flex-direction: column; flex: 1; }
     .curso-badge {
       display: inline-block;
       background: hsl(119,99%,46%,0.12); color: var(--primary);
@@ -485,22 +496,23 @@
       text-transform: uppercase; padding: 0.3rem 0.65rem;
       border-radius: 999px; margin-bottom: 1rem;
       border: 1px solid hsl(119,99%,46%,0.25);
+      align-self: flex-start;
     }
     .curso-title {
-      font-size: 1rem; font-weight: 600; color: var(--fg);
-      letter-spacing: -0.01em; line-height: 1.35; flex: 1; margin-bottom: 1.25rem;
+      font-size: 1.1rem; font-weight: 600; color: var(--fg);
+      letter-spacing: -0.02em; line-height: 1.35; flex: 1; margin-bottom: 1.5rem;
     }
     .curso-footer {
       display: flex; justify-content: space-between; align-items: center;
-      padding-top: 1rem; border-top: 1px solid var(--border);
+      padding-top: 1.25rem; border-top: 1px solid var(--border);
     }
     .curso-price {
-      font-size: 1rem; font-weight: 700; color: var(--primary);
+      font-size: 1.05rem; font-weight: 700; color: var(--primary);
     }
     .curso-link {
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--muted-fg);
-      transition: color 0.2s;
+      transition: color 0.2s; display: inline-flex; align-items: center; gap: 0.35rem;
     }
     .curso-link:hover { color: var(--fg); }
 
@@ -915,51 +927,7 @@
       imparcialidade e fundamentação científica.
     </p>
     <div class="gabinete-grid">
-      <div class="services-list stagger">
-        <a href="pericia-forense.html" class="service-item">
-          <div class="service-num">01</div>
-          <div>
-            <div class="service-name">Perícia Forense</div>
-            <div class="service-desc">Análise e investigação de cenas de crime, recolha de vestígios e elaboração de relatórios periciais para tribunais.</div>
-            <span class="service-item-arrow">Saber mais →</span>
-          </div>
-          <div class="service-photo">
-            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/pericia-forense-1x1-400p-300x300.jpg" alt="Perícia Forense" loading="lazy" />
-          </div>
-        </a>
-        <a href="acidentologia.html" class="service-item">
-          <div class="service-num">02</div>
-          <div>
-            <div class="service-name">Acidentologia</div>
-            <div class="service-desc">Investigação técnico-científica de acidentes de viação e análise forense de dinâmicas rodoviárias.</div>
-            <span class="service-item-arrow">Saber mais →</span>
-          </div>
-          <div class="service-photo">
-            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/acidentologia-1x1-400p-300x300.jpg" alt="Acidentologia" loading="lazy" />
-          </div>
-        </a>
-        <a href="assessoria-forense.html" class="service-item">
-          <div class="service-num">03</div>
-          <div>
-            <div class="service-name">Assessoria Forense</div>
-            <div class="service-desc">Consultoria especializada para processos judiciais, apoio à defesa e acusação com pareceres técnico-científicos.</div>
-            <span class="service-item-arrow">Saber mais →</span>
-          </div>
-          <div class="service-photo">
-            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/assessoria-forense-1x1-400p-300x300.jpg" alt="Assessoria Forense" loading="lazy" />
-          </div>
-        </a>
-        <a href="propriedade-industrial.html" class="service-item">
-          <div class="service-num">04</div>
-          <div>
-            <div class="service-name">Propriedade Industrial</div>
-            <div class="service-desc">Análise criminológica de casos de violação de propriedade industrial, contrafação e concorrência desleal.</div>
-            <span class="service-item-arrow">Saber mais →</span>
-          </div>
-          <div class="service-photo">
-            <img src="https://ipcriminologia.pt/wp-content/uploads/2022/06/propriedade-industrial-1x1-400-300x300.jpg" alt="Propriedade Industrial" loading="lazy" />
-          </div>
-        </a>
+      <div class="services-list stagger" id="servicos-container">
         <a href="#contacto" class="gabinete-cta">Submeter Caso <span>→</span></a>
       </div>
       <div class="reveal-right" style="display:flex; flex-direction:column;">
@@ -993,95 +961,13 @@
         forenses e da segurança, <strong>ao abrigo da Lei n.º 70/2019</strong>.
       </p>
     </div>
-    <div class="areas-grid stagger">
-      <div class="area-card">
-        <span class="area-icon">🔍</span>
-        <div class="area-name">Criminologia</div>
-        <div class="area-desc">Estudo das causas do crime e investigação criminológica ao abrigo da Lei 70/2019.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">🧪</span>
-        <div class="area-name">Criminalística</div>
-        <div class="area-desc">Técnicas de recolha de vestígios incluindo balística e toxicologia forense.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">⚖️</span>
-        <div class="area-name">Direito</div>
-        <div class="area-desc">Enquadramento jurídico e participação em perícias e processos judiciais.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">🧠</span>
-        <div class="area-name">Psicologia</div>
-        <div class="area-desc">Compreensão do comportamento criminal e avaliação forense de vítimas e arguidos.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">🛡️</span>
-        <div class="area-name">Ciências Policiais</div>
-        <div class="area-desc">Métodos operacionais e estratégias de prevenção criminal para forças de segurança.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">🔬</span>
-        <div class="area-name">Ciências Forenses</div>
-        <div class="area-desc">Aplicação das ciências naturais na produção de prova e análise pericial.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">💻</span>
-        <div class="area-name">Cibersegurança</div>
-        <div class="area-desc">Investigação de cibercrime e proteção de dados em ambiente digital.</div>
-      </div>
-      <div class="area-card">
-        <span class="area-icon">🌐</span>
-        <div class="area-name">Sociologia</div>
-        <div class="area-desc">Interação social, delinquência e desenvolvimento de políticas de prevenção.</div>
-      </div>
-    </div>
+    <div class="areas-grid stagger" id="areas-container"></div>
 
     <!-- Featured courses -->
     <div style="margin-top:5rem;">
       <p class="section-label reveal">Formações em Destaque</p>
       <h3 class="section-title reveal" style="font-size:clamp(1.5rem,3vw,2.2rem);">Próximas Edições</h3>
-      <div class="cursos-grid stagger">
-        <div class="curso-card">
-          <span class="curso-badge">Software</span>
-          <div class="curso-title">iCFVIAL — Software de Segurança Rodoviária</div>
-          <div class="curso-footer">
-            <span class="curso-price">Consultar</span>
-            <span class="curso-link">Saber Mais →</span>
-          </div>
-        </div>
-        <div class="curso-card">
-          <span class="curso-badge">6ª Edição</span>
-          <div class="curso-title">Gestão Local do Crime — Curso Completo</div>
-          <div class="curso-footer">
-            <span class="curso-price">€69 – €99</span>
-            <span class="curso-link">Inscrever →</span>
-          </div>
-        </div>
-        <div class="curso-card">
-          <span class="curso-badge">Seminário</span>
-          <div class="curso-title">Seminário da Polícia Judiciária Militar</div>
-          <div class="curso-footer">
-            <span class="curso-price">Consultar</span>
-            <span class="curso-link">Saber Mais →</span>
-          </div>
-        </div>
-        <div class="curso-card">
-          <span class="curso-badge">Pós-Graduação</span>
-          <div class="curso-title">Psicologia Forense — Pós-Graduação</div>
-          <div class="curso-footer">
-            <span class="curso-price">Consultar</span>
-            <span class="curso-link">Saber Mais →</span>
-          </div>
-        </div>
-        <div class="curso-card">
-          <span class="curso-badge">Webinar</span>
-          <div class="curso-title">Introdução à Medicina Legal</div>
-          <div class="curso-footer">
-            <span class="curso-price">Gratuito</span>
-            <span class="curso-link">Inscrever →</span>
-          </div>
-        </div>
-      </div>
+      <div class="cursos-grid stagger" id="cursos-container"></div>
     </div>
   </div>
 </section>
@@ -1171,98 +1057,7 @@
     <p class="section-label reveal">A Nossa Equipa</p>
     <h2 class="section-title reveal">Especialistas<br><span>dedicados à justiça.</span></h2>
     <div class="divider reveal"></div>
-    <div class="team-grid stagger">
-      <a class="team-card" href="membro.html?id=miguel-silva">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/miguel-silva-300.jpg" alt="Miguel Silva" loading="lazy" />
-        </div>
-        <div class="team-name">Miguel Silva</div>
-        <div class="team-role">Diretor</div>
-        <div class="team-bio">Criminologista, Doutorado em Criminologia e Presidente da APC. Professor na Universidade Lusíada do Norte.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=joao-barrigas">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/joao-barrigas-300.jpg" alt="João Barrigas" loading="lazy" />
-        </div>
-        <div class="team-name">João Barrigas</div>
-        <div class="team-role">Diretor Adjunto</div>
-        <div class="team-bio">Doutorado pela Universidade de Vigo. Docente desde 1990. Professor Auxiliar na UTAD.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=ricardo-santos">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/ricardo-santos-300.jpg" alt="Ricardo Santos" loading="lazy" />
-        </div>
-        <div class="team-name">Ricardo Santos</div>
-        <div class="team-role">Diretor Adjunto</div>
-        <div class="team-bio">Economista pela Universidade Católica. Ex-deputado parlamentar e signatário da Lei de Criminologia.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=jose-alba-robles">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/jose-robles-300.jpg" alt="José Luís Alba Robles" loading="lazy" />
-        </div>
-        <div class="team-name">José Luís Alba Robles</div>
-        <div class="team-role">Coord. Científico</div>
-        <div class="team-bio">Presidente da IBERACRIMA. Professor na Universidade de Valência. Especialista em delinquência juvenil e crime organizado.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=mercedes-alvarez-segui">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/mercedes-segui-300.jpg" alt="Mercedes Álvarez Seguí" loading="lazy" />
-        </div>
-        <div class="team-name">Mercedes Álvarez Seguí</div>
-        <div class="team-role">Perita / Docente</div>
-        <div class="team-bio">Médica especialista em Medicina Legal e Forense. Diretora de Genética Forense desde 2000.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=miguel-velasquez">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/miguel-velasquez-300.jpg" alt="Miguel Velásquez" loading="lazy" />
-        </div>
-        <div class="team-name">Miguel E. Velásquez</div>
-        <div class="team-role">Perito / Docente</div>
-        <div class="team-bio">Médico especialista em Medicina Forense. Presidente da Associação de Medicina Legal de El Salvador.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=carlos-aldecoa">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/carlos-aldecoa-300.jpg" alt="Carlos Aldecoa" loading="lazy" />
-        </div>
-        <div class="team-name">Carlos Aldecoa</div>
-        <div class="team-role">Docente</div>
-        <div class="team-bio">Ex-oficial do Exército Argentino. Especialista em prevenção situacional do crime. MBA pela UPC.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=jose-gonzalez">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2022/02/jose-gonzalez-300.jpg" alt="Jose María González" loading="lazy" />
-        </div>
-        <div class="team-name">José M. González</div>
-        <div class="team-role">Perito / Docente</div>
-        <div class="team-bio">Diretor do Observatório Criminológico de Segurança Rodoviária. Autor de "Criminología Vial".</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=alice-craveiro">
-        <div class="team-photo-wrap">
-          <img src="https://ipcriminologia.pt/wp-content/uploads/2024/12/49fe8393-700d-4f54-834a-a09e95e5e603-1.jpg" alt="Alice Craveiro" loading="lazy" />
-        </div>
-        <div class="team-name">Alice Craveiro</div>
-        <div class="team-role">Perita / Docente</div>
-        <div class="team-bio">Licenciada em Criminologia pela UFP. Especialização em tráfico de droga e crime organizado.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-      <a class="team-card" href="membro.html?id=miguel-gomes">
-        <div class="team-photo-wrap">
-          <div class="team-initials">MG</div>
-        </div>
-        <div class="team-name">Miguel Gomes</div>
-        <div class="team-role">Coord. de Formação</div>
-        <div class="team-bio">Licenciado em Relações Internacionais. Instrutor de formação certificado. Assembleiro Municipal de Vila do Conde.</div>
-        <div class="team-card-link">Ver perfil →</div>
-      </a>
-    </div>
+    <div class="team-grid stagger" id="equipa-container"></div>
   </div>
 </section>
 
@@ -1589,6 +1384,132 @@
   document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stagger').forEach(el => {
     observer.observe(el);
   });
+
+  /* ─── SANITY CMS INTEGRATION ──────────────────── */
+  (function () {
+    const PROJECT = 'dlel582r';
+    const DATASET = 'production';
+    const CDN     = `https://${PROJECT}.api.sanity.io/v2024-01-01/data/query/${DATASET}`;
+
+    async function groq(query) {
+      const res = await fetch(`${CDN}?query=${encodeURIComponent(query)}`);
+      if (!res.ok) throw new Error('Sanity query failed');
+      return (await res.json()).result;
+    }
+
+    /* Safe element builder — strings become text nodes, never parsed as HTML */
+    function h(tag, attrs) {
+      var e = document.createElement(tag);
+      Object.keys(attrs || {}).forEach(function(k) {
+        if (k === 'class')   { e.className = attrs[k]; }
+        else if (k === 'text') { e.textContent = attrs[k]; }
+        else                 { e.setAttribute(k, attrs[k]); }
+      });
+      return e;
+    }
+
+    function append(parent) {
+      var kids = Array.prototype.slice.call(arguments, 1);
+      kids.forEach(function(k) {
+        if (k) parent.appendChild(k);
+      });
+      return parent;
+    }
+
+    function reAnimate(container) {
+      if (container && container.classList.contains('visible')) {
+        container.classList.remove('visible');
+        requestAnimationFrame(function() { container.classList.add('visible'); });
+      }
+    }
+
+    function makeServicoCard(s) {
+      var a    = h('a',    {'class': 'service-item', 'href': (s.slug || '') + '.html'});
+      var num  = h('div',  {'class': 'service-num',  'text': s.numero || ''});
+      var info = h('div',  {});
+      var name = h('div',  {'class': 'service-name', 'text': s.nome || ''});
+      var desc = h('div',  {'class': 'service-desc', 'text': s.descricao || ''});
+      var arr  = h('span', {'class': 'service-item-arrow', 'text': 'Saber mais →'});
+      append(info, name, desc, arr);
+      var photo = h('div', {'class': 'service-photo'});
+      if (s.fotoUrl) {
+        append(photo, h('img', {'src': s.fotoUrl, 'alt': s.nome || '', 'loading': 'lazy'}));
+      }
+      return append(a, num, info, photo);
+    }
+
+    function makeAreaCard(a) {
+      var card = h('div', {'class': 'area-card'});
+      var icon = h('span', {'class': 'area-icon', 'text': a.icone || ''});
+      var name = h('div',  {'class': 'area-name',  'text': a.nome || ''});
+      var desc = h('div',  {'class': 'area-desc',  'text': a.descricao || ''});
+      return append(card, icon, name, desc);
+    }
+
+    function makeCursoCard(c) {
+      var a    = h('a', {'class': 'curso-card', 'href': (c.slug || '') + '.html'});
+      var wrap = h('div', {'class': 'curso-img-wrap'});
+      var imgSrc = c.imagemUrl
+        ? c.imagemUrl
+        : 'https://placehold.co/680x220/1a1a1a/3aff0a?text=' + encodeURIComponent(c.titulo || '');
+      var img  = h('img', {
+        'class': 'curso-img',
+        'src': imgSrc,
+        'alt': c.titulo || '', 'loading': 'lazy'
+      });
+      append(wrap, img);
+      var body   = h('div', {'class': 'curso-body'});
+      var badge  = h('span', {'class': 'curso-badge',  'text': c.badge || ''});
+      var title  = h('div',  {'class': 'curso-title',  'text': c.titulo || ''});
+      var footer = h('div',  {'class': 'curso-footer'});
+      var price  = h('span', {'class': 'curso-price',  'text': c.preco || ''});
+      var link   = h('span', {'class': 'curso-link',   'text': 'Saber Mais →'});
+      append(footer, price, link);
+      append(body, badge, title, footer);
+      return append(a, wrap, body);
+    }
+
+    function makeMemberCard(m) {
+      var slug = m.slug || '';
+      var a    = h('a', {'class': 'team-card', 'href': 'membro.html?id=' + slug});
+      var pw   = h('div', {'class': 'team-photo-wrap'});
+      if (m.fotoUrl) {
+        append(pw, h('img', {'src': m.fotoUrl, 'alt': m.nome || '', 'loading': 'lazy'}));
+      } else {
+        var ini  = m.iniciais || (m.nome || '').split(' ').map(function(n){ return n[0]; }).join('').slice(0,2).toUpperCase();
+        append(pw, h('div', {'class': 'team-initials', 'text': ini}));
+      }
+      var name = h('div', {'class': 'team-name', 'text': m.nome  || ''});
+      var role = h('div', {'class': 'team-role', 'text': m.cargo || ''});
+      var bio  = h('div', {'class': 'team-bio',  'text': m.bio   || ''});
+      var lnk  = h('div', {'class': 'team-card-link', 'text': 'Ver perfil →'});
+      return append(a, pw, name, role, bio, lnk);
+    }
+
+    function populate(id, items, makeCard, beforeEl) {
+      var wrap = document.getElementById(id);
+      if (!wrap || !items || !items.length) return;
+      var frag = document.createDocumentFragment();
+      items.forEach(function(item) { frag.appendChild(makeCard(item)); });
+      if (beforeEl) { wrap.insertBefore(frag, beforeEl); }
+      else          { wrap.appendChild(frag); }
+      reAnimate(wrap);
+    }
+
+    Promise.all([
+      groq('*[_type=="servico"]|order(ordem asc){nome,numero,descricao,fotoUrl,"slug":slug.current}'),
+      groq('*[_type=="areaFormacao"]|order(ordem asc){nome,icone,descricao,"slug":slug.current}'),
+      groq('*[_type=="formacao"&&emDestaque==true]|order(ordem asc){titulo,badge,preco,"slug":slug.current,"imagemUrl":imagem.asset->url}'),
+      groq('*[_type=="membroEquipa"]|order(ordem asc){nome,cargo,bio,fotoUrl,iniciais,"slug":slug.current}')
+    ]).then(function(results) {
+      var servicos = results[0], areas = results[1], cursos = results[2], equipa = results[3];
+      var wrap = document.getElementById('servicos-container');
+      populate('servicos-container', servicos, makeServicoCard, wrap ? wrap.querySelector('.gabinete-cta') : null);
+      populate('areas-container',    areas,    makeAreaCard,    null);
+      populate('cursos-container',   cursos,   makeCursoCard,   null);
+      populate('equipa-container',   equipa,   makeMemberCard,  null);
+    }).catch(function(err) { console.warn('Sanity load error:', err); });
+  })();
 
   /* ─── MOBILE MENU TOGGLE ────────────────────── */
   const menuBtn    = document.getElementById('menuBtn');
