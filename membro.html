@@ -195,6 +195,9 @@
     .footer-logo { font-size: 0.9rem; font-weight: 700; }
     .footer-logo span { color: var(--primary); }
     .footer-copy { font-size: 0.7rem; color: var(--muted-fg); font-weight: 300; }
+    .footer-links { display: flex; gap: 1.5rem; list-style: none; flex-wrap: wrap; }
+    .footer-links a { font-size: 0.7rem; font-weight: 400; color: var(--muted-fg); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--fg); }
 
     @keyframes fade-up {
       from { opacity: 0; transform: translateY(20px); }
@@ -240,7 +243,13 @@
 
 <footer>
   <div class="footer-logo">IPC <span>·</span> Instituto Português de Criminologia</div>
-  <p class="footer-copy">2025 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <p class="footer-copy">© 2026 Instituto Português de Criminologia. Todos os direitos reservados.</p>
+  <ul class="footer-links">
+    <li><a href="privacidade.html">Política de Privacidade</a></li>
+    <li><a href="#">Termos de Uso</a></li>
+    <li><a href="https://www.facebook.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Facebook</a></li>
+    <li><a href="https://www.instagram.com/institutoportuguescriminologia/" target="_blank" rel="noopener">Instagram</a></li>
+  </ul>
 </footer>
 
 <script>
